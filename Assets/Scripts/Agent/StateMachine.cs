@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class StateMachine <T> where T: Agent {
+public class StateMachine<T> where T: Agent {
 	
 	private T agent;
 
@@ -20,13 +20,9 @@ public class StateMachine <T> where T: Agent {
 	}
 
 	public void Update () {
-
 //		BoardManager boardScript = GameObject.Fi nd("GameManager").GetComponent<BoardManager>();
 //		Vector3 position = boardScript.worldGrid[agent.gridPosition.x, agent.gridPosition.y].transform.position;
 //		agent.transform.position = new Vector3(position.x, position.y, agent.transform.position.z);
-
-
-
 		if (this.globalState != null)
 			this.globalState.Execute (this.agent);
 		if (this.currentState != null) 
@@ -34,12 +30,16 @@ public class StateMachine <T> where T: Agent {
 	}
 	
 	public void ChangeState (State<T> newState) {
+		
+		if (this.currentState != null) {
+			this.currentState.Exit (this.agent);
+		}
 		this.previouState = this.currentState;
-		if (this.currentState != null) 
-			this.currentState.Exit(this.agent);
+
+		if (newState != null) {
+			newState.Enter (this.agent);
+		}
 		this.currentState = newState;
-		if (this.currentState != null) 
-			this.currentState.Enter(this.agent);
 	}
 
 	public void RevertToPreviousState(){

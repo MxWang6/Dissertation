@@ -1,6 +1,6 @@
-﻿abstract public class State <T> {
+﻿public abstract class State <T> {
 
-	abstract public void Enter (T agent);
-	abstract public void Execute (T agent);
-	abstract public void Exit (T agent);
+	public abstract void Enter (T agent);
+	public abstract void Execute (T agent);
+	public abstract void Exit (T agent);
 }
