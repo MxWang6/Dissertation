@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Locations {
-	public static Vector3 GOLDMINE = new Vector3 (8, 2, 0f);
-	public static Vector3 SHACK = new Vector3 (3, 3, 0f);
-	public static Vector3 EXIT = new Vector3 (10, 10, 0f);
+	public static Position GOLDMINE = new Position (8, 2);
+	public static Position SHACK = new Position (3, 3);
+	public static Position EXIT = new Position (10, 10);
 }

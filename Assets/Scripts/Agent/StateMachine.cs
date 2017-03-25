@@ -23,10 +23,12 @@ public class StateMachine<T> where T: Agent {
 //		BoardManager boardScript = GameObject.Fi nd("GameManager").GetComponent<BoardManager>();
 //		Vector3 position = boardScript.worldGrid[agent.gridPosition.x, agent.gridPosition.y].transform.position;
 //		agent.transform.position = new Vector3(position.x, position.y, agent.transform.position.z);
-		if (this.globalState != null)
+		if (this.globalState != null) {
 			this.globalState.Execute (this.agent);
-		if (this.currentState != null) 
-			this.currentState.Execute(this.agent);
+		}
+		if (this.currentState != null) {
+			this.currentState.Execute (this.agent);
+		}
 	}
 	
 	public void ChangeState (State<T> newState) {

@@ -21,8 +21,8 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 		
-	public int columns = 27;                                         //Number of columns in our game board.
-	public int rows = 8;                                            //Number of rows in our game board.
+	private const int columns = 27;                                         //Number of columns in our game board.
+	private const int rows = 12;                                            //Number of rows in our game board.
 	public Count wallCount = new Count (5, 9);                      //Lower and upper limit for our random number of walls per level.
 	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
 
@@ -38,21 +38,22 @@ public class BoardManager : MonoBehaviour {
 	private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 	private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
 
+	private TileSprite[,] gridWorld = new TileSprite[columns, rows];
+
 
 	//Clears our list gridPositions and prepares it to generate a new board.
-	private void InitialiseList ()
-	{
-		
-		gridPositions.Clear ();
-		for(int x = 1; x < columns-1; x++)
-		{
-			
-			for(int y = 1; y < rows-1; y++)
-			{
-				gridPositions.Add (new Vector3(x, y, 0f));
-			}
-		}
-	}
+//	private void InitialiseList ()
+//	{
+//		
+//		gridPositions.Clear ();
+//		for(int x = 1; x < columns-1; x++)
+//		{
+//			for(int y = 1; y < rows-1; y++)
+//			{
+//				gridPositions.Add (new Vector3(x, y, 0f));
+//			}
+//		}
+//	}
 
 
 	//Sets up the outer walls and floor (background) of the game board.
@@ -61,18 +62,21 @@ public class BoardManager : MonoBehaviour {
 		
 		boardHolder = new GameObject ("Board").transform;
 
-		for(int x = -1; x < columns + 1; x++)
-		{
-			for(int y = -1; y < rows + 1; y++)
-			{
-				GameObject toInstantiate = floorTiles[Random.Range (0,floorTiles.Length)];
+		for(int x = -1; x < columns + 1; x++) {
+			for(int y = -1; y < rows + 1; y++) {
+				Position position = new Position (x, y);
+				GameObject instance;
 				if (x == -1 || x == columns || y == -1 || y == rows) {
-					toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length)];
+					GameObject toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length)];
+					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
+				} else {
+					GameObject toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)];
+					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
+					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
+					TileSprite tileSprite = instance.GetComponent<TileSprite> ();
+					tileSprite.setPosition (position);
+					gridWorld [x, y] = tileSprite;
 				}
-
-				//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
-				GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
-
 				//Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
 				instance.transform.SetParent (boardHolder);
 			}
@@ -109,14 +113,67 @@ public class BoardManager : MonoBehaviour {
 	public void SetupScene (int level)
 	{
 		BoardSetup();
-		InitialiseList();
+//		InitialiseList();
 
 	//	LayoutObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
 	//	LayoutObjectAtRandom (foodTiles, foodCount.minimum, foodCount.maximum);
 		//int enemyCount = (int)Mathf.Log(level, 2f);
 	//	LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
-		Instantiate (exit, Locations.EXIT, Quaternion.identity);
-		Instantiate (shack, Locations.SHACK, Quaternion.identity);
-		Instantiate (goldMine, Locations.GOLDMINE, Quaternion.identity);
+		Instantiate (exit, Locations.EXIT.toVector3(), Quaternion.identity);
+		Instantiate (shack, Locations.SHACK.toVector3(), Quaternion.identity);
+		Instantiate (goldMine, Locations.GOLDMINE.toVector3(), Quaternion.identity);
+	}
+
+	public List<TileSprite> findPath(Position currentPosition, Position targetPosition) {
+		TileSprite currentTile = gridWorld [currentPosition.x, currentPosition.y];
+		TileSprite targetTile = gridWorld [targetPosition.x, targetPosition.y];
+
+		return findPathRecursively (currentTile, targetTile);
+	}
+
+	private List<TileSprite> findPathRecursively(TileSprite currentTile, TileSprite targetTile) {
+		List<TileSprite> path = new List<TileSprite> ();
+
+		Position currentPosition = currentTile.getPosition ();
+		Position targetPosition = targetTile.getPosition ();
+
+		List<TileSprite> nearTiles = new List<TileSprite> ();
+
+		if (currentPosition.x - 1 >= 0) {
+			nearTiles.Add (gridWorld [currentPosition.x - 1, currentPosition.y]);
+		}
+
+		if (currentPosition.x + 1 < columns) {
+			nearTiles.Add (gridWorld [currentPosition.x + 1, currentPosition.y]);
+		}
+
+		if (currentPosition.y - 1 >= 0) {
+			nearTiles.Add (gridWorld [currentPosition.x, currentPosition.y - 1]);
+		}
+
+		if (currentPosition.y + 1 < rows) {
+			nearTiles.Add (gridWorld [currentPosition.x, currentPosition.y + 1]);
+		}
+
+		double minDistance = Double.MaxValue;
+		int index = 0;
+		for (int i = 0; i < nearTiles.Count; i++) {
+			Position nearPosition = nearTiles[i].getPosition();
+			Vector3 diff = targetPosition.toVector3() - nearPosition.toVector3();
+			double distance = Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2); // distance in square
+			if (distance < minDistance) {
+				minDistance = distance;
+				index = i;
+			}
+		}
+
+		TileSprite selectedTile = nearTiles[index];
+		path.Add (selectedTile);
+		if (selectedTile == targetTile) {
+			return path;
+		} else {
+			path.AddRange (findPathRecursively(selectedTile, targetTile));
+			return path;
+		}
 	}
 }

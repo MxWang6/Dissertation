@@ -10,10 +10,11 @@ public class BobMiner : Agent {
 		Bank,
 		Shack
 	};
-	protected BoardManager boardScript;
+	private BoardManager boardManager;
 
 	private StateMachine<BobMiner> stateMachine;
-	private Location location = Location.Goldmine;
+	private Position currentPosition;
+	private Position targetPosition;
 	private int GoldCarried = 0;
 	private int GoldInBank = 0;
 	private int DailyDepositedGoldInBank = 0;
@@ -21,17 +22,28 @@ public class BobMiner : Agent {
 	private int Thirst = 0;
 	// higher value means more fatigue.
 	private int Fatigue = 0;
+	private List<TileSprite> path = new List<TileSprite>();
 
 	public void Awake() {
-		
-		boardScript = GameObject.Find("GameManager").GetComponent<BoardManager>();
+		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<BobMiner>();
 		stateMachine.Init(this, GoHomeAndSleepTillRested.Instance);
+		currentPosition = new Position(0,0);
+		Time.fixedDeltaTime = 0.5f;
 	}
 
+	public void FixedUpdate() {
+		if (path.Count > 0) {
+			TileSprite nextTile = path [0];
+			path.RemoveAt (0);
+			transform.position = nextTile.getPosition ().toVector3 ();
+		}
+	}
 	public override void Update() {
-		Thirst++;
-		stateMachine.Update();
+		if (path.Count == 0) {
+			Thirst++;
+			stateMachine.Update ();
+		}
 	}
 
 	public void ChangeState(State<BobMiner> e) {
@@ -40,22 +52,25 @@ public class BobMiner : Agent {
 
 	public void ChangeLocation(Location newLocation) {
 		if (newLocation == Location.Bank) {
-			this.transform.position = Locations.EXIT - new Vector3 (0, 1, 0);
-
+			//this.transform.position = Locations.EXIT - new Vector3 (0, 1, 0);
+			targetPosition = new Position(Locations.EXIT.x, Locations.EXIT.y - 1);
 		} else if (newLocation == Location.Goldmine) {
-			this.transform.position = Locations.GOLDMINE - new Vector3 (0, 1, 0);
-
+			//this.transform.position = Locations.GOLDMINE - new Vector3 (0, 1, 0);
+			targetPosition = new Position(Locations.GOLDMINE.x, Locations.GOLDMINE.y - 1);
 		} else if (newLocation == Location.Saloon) {
-			this.transform.position = new Vector3 (0, 0, 0);
-
+			//this.transform.position = new Vector3 (0, 0, 0);
+			targetPosition = new Position(0, 0);
 		} else if (newLocation == Location.Shack) {
-			this.transform.position = Locations.SHACK - new Vector3 (0, 1, 0);
-
+			//this.transform.position = Locations.SHACK - new Vector3 (0, 1, 0);
+			targetPosition = new Position(Locations.SHACK.x, Locations.SHACK.y - 1);
 		} else {
 			// not happen.
 		}
 
-		location = newLocation;
+		// TODO: calculate path
+		path.Clear();
+		path.AddRange(boardManager.findPath(currentPosition, targetPosition));
+		currentPosition = targetPosition;
 	}
 
 	public void DigNugget() {
@@ -117,8 +132,8 @@ public class BobMiner : Agent {
 		return DailyDepositedGoldInBank >= 20;
 	}
 
-	public Location GetLocation() {
-		return location;
+	public Position GetLocation() {
+		return currentPosition;
 	}
 
 	public int getCarriedGold() {
