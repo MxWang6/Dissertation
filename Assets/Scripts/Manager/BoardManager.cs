@@ -36,7 +36,7 @@ public class BoardManager : MonoBehaviour {
 	private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 	private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
 
-	private Tile[,] gridWorld = new Tile[columns, rows];
+	private GridWorld gridWorld = new GridWorld(columns, rows);
 
 	//Sets up the outer walls and floor (background) of the game board.
 	private void BoardSetup ()
@@ -57,7 +57,7 @@ public class BoardManager : MonoBehaviour {
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
 					Tile tileSprite = instance.GetComponent<Tile> ();
 					tileSprite.setPosition (position);
-					gridWorld [x, y] = tileSprite;
+					gridWorld.addTile (x, y, tileSprite);
 				}
 				//Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
 				instance.transform.SetParent (boardHolder);
@@ -107,121 +107,7 @@ public class BoardManager : MonoBehaviour {
 		Instantiate (saloon, Locations.SALOON.toVector3(), Quaternion.identity);
 	}
 
-	public List<Node> findPath(Position currentPosition, Position targetPosition) {
-		Tile currentTile = gridWorld [currentPosition.x, currentPosition.y];
-		Tile targetTile = gridWorld [targetPosition.x, targetPosition.y];
-
-		List<Node> open = new List<Node> ();
-		List<Node> close = new List<Node> ();
-
-		Node startNode = new Node (currentTile);
-		Node targetNode = new Node (targetTile);
-		open.Add (startNode);
-		Node currentNode = startNode;
-		while (open.Count > 0) {
-			currentNode = open [0];
-			open.ForEach( (node) => {
-				if (node.GetFcost() < currentNode.GetFcost() || node.GetFcost() == currentNode.GetFcost() && node.hcost < currentNode.hcost) {
-					currentNode = node;
-				}
-			});
-			open.Remove (currentNode);
-			close.Add (currentNode);
-
-			if (currentNode.Equals(targetNode)) {
-				return GetPath (startNode, currentNode);
-			}
-
-			findNearNodes(currentNode).ForEach((nearNode) => {
-				if (!nearNode.tile.blocked && !close.Contains(nearNode)) {
-					int newGcostToNearNode = currentNode.gcost + GetDistance(currentNode, nearNode);
-
-					if (newGcostToNearNode < nearNode.gcost || !open.Contains(nearNode)) {
-						
-						if (!open.Contains(nearNode)) {
-							open.Add(nearNode);
-						} else {
-							// we wanna retrieve the near node stored in the open list already to update.
-							nearNode = open[open.IndexOf(nearNode)];
-//							open.ForEach((node) => {
-//								if (node.Equals(nearNode)) 
-//							});
-						}
-						nearNode.gcost = newGcostToNearNode;
-						nearNode.hcost = GetDistance(nearNode, targetNode);
-						nearNode.parent = currentNode;
-					}
-				}
-			});
-
-		}
-
-		// no path is found, e.g. no path can reach the distination.
-		return GetPath (startNode, currentNode);
-	}
-
-	private List<Node> findNearNodes(Node currentNode) {
-		Position currentPosition = currentNode.tile.getPosition ();
-		List<Node> nearNodes = new List<Node> ();
-
-		for (int x = -1; x <= 1; x++) {
-			for (int y = -1; y <= 1; y++) {
-				if (x == 0 && y == 0) {
-					continue;
-				}
-				int nearPositionX = currentPosition.x + x;
-				int nearPositionY = currentPosition.y + y;
-				if (nearPositionX >= 0 && nearPositionX < columns && nearPositionY >= 0 && nearPositionY < rows) {
-					nearNodes.Add (new Node (gridWorld [nearPositionX, nearPositionY]));
-				}
-			}
-		}
-
-		return nearNodes;
-//
-//		if (currentPosition.x - 1 >= 0) {
-//			TileSprite tile = gridWorld [currentPosition.x - 1, currentPosition.y];
-//			nearNodes.Add (new Node(tile));
-//		}
-//
-//		if (currentPosition.x + 1 < columns) {
-//			TileSprite tile = gridWorld [currentPosition.x + 1, currentPosition.y];
-//			nearNodes.Add (new Node(tile));
-//		}
-//
-//		if (currentPosition.y - 1 >= 0) {
-//			TileSprite tile = gridWorld [currentPosition.x, currentPosition.y - 1];
-//			nearNodes.Add (new Node(tile));
-//		}
-//
-//		if (currentPosition.y + 1 < rows) {
-//			TileSprite tile = gridWorld [currentPosition.x, currentPosition.y + 1];
-//			nearNodes.Add (new Node(tile));
-//		}
-//
-//		return nearNodes;
-	}
-
-	private int GetDistance(Node node1, Node node2) {
-		int distanceX = Math.Abs (node1.tile.position.x - node2.tile.position.x);
-		int distanceY = Math.Abs (node1.tile.position.y - node2.tile.position.y);
-
-		if (distanceX > distanceY) {
-			return 14 * distanceY + 10 * (distanceX - distanceY);
-		}
-
-		return 14 * distanceX + 10 * (distanceY - distanceX);
-	}
-
-	private List<Node> GetPath(Node startNode, Node endNode) {
-		List<Node> path = new List<Node> ();
-		Node currentNode = endNode;
-		while (!currentNode.Equals(startNode)) {
-			path.Add (currentNode);
-			currentNode = currentNode.parent;
-		}
-		path.Reverse ();
-
-		return path;
+	public GridWorld getGridWorld() {
+		return gridWorld;
 	}
 }

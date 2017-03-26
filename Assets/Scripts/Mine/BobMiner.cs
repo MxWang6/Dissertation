@@ -65,7 +65,7 @@ public enum Location {
 		}
 
 		path.Clear();
-		path.AddRange(boardManager.findPath(currentPosition, targetPosition));
+		path.AddRange(boardManager.getGridWorld().findPath(currentPosition, targetPosition));
 		currentPosition = targetPosition;
 	}
 
