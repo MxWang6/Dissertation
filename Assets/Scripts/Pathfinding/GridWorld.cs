@@ -15,8 +15,8 @@ public class GridWorld
 		this.height = height;
 	}
 
-	public Tile getTile(int x, int y) {
-		return gridWorld [x, y];
+	public Tile getTile(Position position) {
+		return gridWorld [position.x, position.y];
 	}
 
 	public void addTile(int x, int y, Tile tile) {

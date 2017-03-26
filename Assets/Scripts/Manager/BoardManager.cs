@@ -12,7 +12,6 @@ public class BoardManager : MonoBehaviour {
 		public int minimum;             //Minimum value for our Count class.
 		public int maximum;             //Maximum value for our Count class.
 
-
 		//Assignment constructor.
 		public Count (int min, int max)
 		{
@@ -77,7 +76,7 @@ public class BoardManager : MonoBehaviour {
 
 
 	//LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
-	void LayoutObjectAtRandom (GameObject[] tileArray, int minimum, int maximum)
+	private void LayoutObjectAtRandom (GameObject[] tileArray, int minimum, int maximum)
 	{
 		
 		int objectCount = Random.Range (minimum, maximum+1);
@@ -90,23 +89,42 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
+	private void LayoutObjectAtRandom (GameObject obj)
+	{
+
+		Vector3 randomPosition = RandomPosition();
+		Instantiate(obj, randomPosition, Quaternion.identity);
+	}
 
 	//SetupScene initializes our level and calls the previous functions to lay out the game board
 	public void SetupScene (int level)
 	{
 		BoardSetup();
-//		InitialiseList();
 
-	//	LayoutObjectAtRandom (wallTiles, wallCount.minimum, wallCount.maximum);
-	//	LayoutObjectAtRandom (foodTiles, foodCount.minimum, foodCount.maximum);
-		//int enemyCount = (int)Mathf.Log(level, 2f);
-	//	LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
-		Instantiate (bank, Locations.BANK.toVector3(), Quaternion.identity);
-		Instantiate (shack, Locations.SHACK.toVector3(), Quaternion.identity);
-		Instantiate (goldMine, Locations.GOLDMINE.toVector3(), Quaternion.identity);
-		Instantiate (saloon, Locations.SALOON.toVector3(), Quaternion.identity);
+
+		Position position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(bank, position.toVector3(), Quaternion.identity);
+		Locations.BANK = position;
+		// if the location is placed on a tile marked as blocked. we need to mark as unblocked.
+		// otherwise our path finding can not reach it.
+		gridWorld.getTile (position).blocked = false;
+
+		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(shack, position.toVector3(), Quaternion.identity);
+		Locations.SHACK = position;
+		gridWorld.getTile (position).blocked = false;
+
+		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(goldMine, position.toVector3(), Quaternion.identity);
+		Locations.GOLDMINE = position;
+		gridWorld.getTile (position).blocked = false;
+
+		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(saloon, position.toVector3(), Quaternion.identity);
+		Locations.SALOON = position;
+		gridWorld.getTile (position).blocked = false;
 	}
-
+		
 	public GridWorld getGridWorld() {
 		return gridWorld;
 	}
