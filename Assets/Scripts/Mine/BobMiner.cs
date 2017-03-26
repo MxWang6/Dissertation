@@ -38,6 +38,7 @@ public enum Location {
 			Tile nextTile = path [0].tile;
 			path.RemoveAt (0);
 			transform.position = nextTile.getPosition ().toVector3 ();
+			nextTile.highlighted = false;
 		}
 	}
 	public override void Update() {

@@ -108,6 +108,7 @@ public class GridWorld
 		List<Node> path = new List<Node> ();
 		Node currentNode = endNode;
 		while (!currentNode.Equals(startNode)) {
+			currentNode.tile.highlighted = true;
 			path.Add (currentNode);
 			currentNode = currentNode.parent;
 		}
