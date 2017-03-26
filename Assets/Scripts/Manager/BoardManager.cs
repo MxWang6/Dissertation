@@ -28,33 +28,15 @@ public class BoardManager : MonoBehaviour {
 
 	public GameObject goldMine;
 	public GameObject shack;
-	public GameObject exit;                                         //Prefab to spawn for exit.
+	public GameObject bank;
+	public GameObject saloon;
 	public GameObject[] floorTiles;
 	public GameObject[] outerWallTiles; 
-//	public GameObject[] wallTiles;                                  //Array of wall prefabs.
-//	public GameObject[] foodTiles;                                  //Array of food prefabs.
-//	public GameObject[] enemyTiles;                                 //Array of enemy prefabs.
 
 	private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 	private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
 
 	private TileSprite[,] gridWorld = new TileSprite[columns, rows];
-
-
-	//Clears our list gridPositions and prepares it to generate a new board.
-//	private void InitialiseList ()
-//	{
-//		
-//		gridPositions.Clear ();
-//		for(int x = 1; x < columns-1; x++)
-//		{
-//			for(int y = 1; y < rows-1; y++)
-//			{
-//				gridPositions.Add (new Vector3(x, y, 0f));
-//			}
-//		}
-//	}
-
 
 	//Sets up the outer walls and floor (background) of the game board.
 	private void BoardSetup ()
@@ -119,61 +101,127 @@ public class BoardManager : MonoBehaviour {
 	//	LayoutObjectAtRandom (foodTiles, foodCount.minimum, foodCount.maximum);
 		//int enemyCount = (int)Mathf.Log(level, 2f);
 	//	LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
-		Instantiate (exit, Locations.EXIT.toVector3(), Quaternion.identity);
+		Instantiate (bank, Locations.BANK.toVector3(), Quaternion.identity);
 		Instantiate (shack, Locations.SHACK.toVector3(), Quaternion.identity);
 		Instantiate (goldMine, Locations.GOLDMINE.toVector3(), Quaternion.identity);
+		Instantiate (saloon, Locations.SALOON.toVector3(), Quaternion.identity);
 	}
 
-	public List<TileSprite> findPath(Position currentPosition, Position targetPosition) {
+	public List<Node> findPath(Position currentPosition, Position targetPosition) {
 		TileSprite currentTile = gridWorld [currentPosition.x, currentPosition.y];
 		TileSprite targetTile = gridWorld [targetPosition.x, targetPosition.y];
 
-		return findPathRecursively (currentTile, targetTile);
+		List<Node> open = new List<Node> ();
+		List<Node> close = new List<Node> ();
+
+		Node startNode = new Node (currentTile);
+		Node targetNode = new Node (targetTile);
+		open.Add (startNode);
+		Node currentNode = startNode;
+		while (open.Count > 0) {
+			currentNode = open [0];
+			open.ForEach( (node) => {
+				if (node.GetFcost() < currentNode.GetFcost() || node.GetFcost() == currentNode.GetFcost() && node.hcost < currentNode.hcost) {
+					currentNode = node;
+				}
+			});
+			open.Remove (currentNode);
+			close.Add (currentNode);
+
+			if (currentNode.Equals(targetNode)) {
+				return GetPath (startNode, currentNode);
+			}
+
+			findNearNodes(currentNode).ForEach((nearNode) => {
+				if (!nearNode.tile.blocked && !close.Contains(nearNode)) {
+					int newGcostToNearNode = currentNode.gcost + GetDistance(currentNode, nearNode);
+
+					if (newGcostToNearNode < nearNode.gcost || !open.Contains(nearNode)) {
+						
+						if (!open.Contains(nearNode)) {
+							open.Add(nearNode);
+						} else {
+							// we wanna retrieve the near node stored in the open list already to update.
+							nearNode = open[open.IndexOf(nearNode)];
+//							open.ForEach((node) => {
+//								if (node.Equals(nearNode)) 
+//							});
+						}
+						nearNode.gcost = newGcostToNearNode;
+						nearNode.hcost = GetDistance(nearNode, targetNode);
+						nearNode.parent = currentNode;
+					}
+				}
+			});
+
+		}
+
+		// no path is found, e.g. no path can reach the distination.
+		return GetPath (startNode, currentNode);
 	}
 
-	private List<TileSprite> findPathRecursively(TileSprite currentTile, TileSprite targetTile) {
-		List<TileSprite> path = new List<TileSprite> ();
+	private List<Node> findNearNodes(Node currentNode) {
+		Position currentPosition = currentNode.tile.getPosition ();
+		List<Node> nearNodes = new List<Node> ();
 
-		Position currentPosition = currentTile.getPosition ();
-		Position targetPosition = targetTile.getPosition ();
-
-		List<TileSprite> nearTiles = new List<TileSprite> ();
-
-		if (currentPosition.x - 1 >= 0) {
-			nearTiles.Add (gridWorld [currentPosition.x - 1, currentPosition.y]);
-		}
-
-		if (currentPosition.x + 1 < columns) {
-			nearTiles.Add (gridWorld [currentPosition.x + 1, currentPosition.y]);
-		}
-
-		if (currentPosition.y - 1 >= 0) {
-			nearTiles.Add (gridWorld [currentPosition.x, currentPosition.y - 1]);
-		}
-
-		if (currentPosition.y + 1 < rows) {
-			nearTiles.Add (gridWorld [currentPosition.x, currentPosition.y + 1]);
-		}
-
-		double minDistance = Double.MaxValue;
-		int index = 0;
-		for (int i = 0; i < nearTiles.Count; i++) {
-			Position nearPosition = nearTiles[i].getPosition();
-			Vector3 diff = targetPosition.toVector3() - nearPosition.toVector3();
-			double distance = Math.Pow(diff.x, 2) + Math.Pow(diff.y, 2); // distance in square
-			if (distance < minDistance) {
-				minDistance = distance;
-				index = i;
+		for (int x = -1; x <= 1; x++) {
+			for (int y = -1; y <= 1; y++) {
+				if (x == 0 && y == 0) {
+					continue;
+				}
+				int nearPositionX = currentPosition.x + x;
+				int nearPositionY = currentPosition.y + y;
+				if (nearPositionX >= 0 && nearPositionX < columns && nearPositionY >= 0 && nearPositionY < rows) {
+					nearNodes.Add (new Node (gridWorld [nearPositionX, nearPositionY]));
+				}
 			}
 		}
 
-		TileSprite selectedTile = nearTiles[index];
-		path.Add (selectedTile);
-		if (selectedTile == targetTile) {
-			return path;
-		} else {
-			path.AddRange (findPathRecursively(selectedTile, targetTile));
-			return path;
+		return nearNodes;
+//
+//		if (currentPosition.x - 1 >= 0) {
+//			TileSprite tile = gridWorld [currentPosition.x - 1, currentPosition.y];
+//			nearNodes.Add (new Node(tile));
+//		}
+//
+//		if (currentPosition.x + 1 < columns) {
+//			TileSprite tile = gridWorld [currentPosition.x + 1, currentPosition.y];
+//			nearNodes.Add (new Node(tile));
+//		}
+//
+//		if (currentPosition.y - 1 >= 0) {
+//			TileSprite tile = gridWorld [currentPosition.x, currentPosition.y - 1];
+//			nearNodes.Add (new Node(tile));
+//		}
+//
+//		if (currentPosition.y + 1 < rows) {
+//			TileSprite tile = gridWorld [currentPosition.x, currentPosition.y + 1];
+//			nearNodes.Add (new Node(tile));
+//		}
+//
+//		return nearNodes;
+	}
+
+	private int GetDistance(Node node1, Node node2) {
+		int distanceX = Math.Abs (node1.tile.position.x - node2.tile.position.x);
+		int distanceY = Math.Abs (node1.tile.position.y - node2.tile.position.y);
+
+		if (distanceX > distanceY) {
+			return 14 * distanceY + 10 * (distanceX - distanceY);
 		}
+
+		return 14 * distanceX + 10 * (distanceY - distanceX);
+	}
+
+	private List<Node> GetPath(Node startNode, Node endNode) {
+		List<Node> path = new List<Node> ();
+		Node currentNode = endNode;
+		while (!currentNode.Equals(startNode)) {
+			path.Add (currentNode);
+			currentNode = currentNode.parent;
+		}
+		path.Reverse ();
+
+		return path;
 	}
 }

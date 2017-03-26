@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BobMiner : Agent {
 
-	public enum Location {
+public enum Location {
 		Goldmine,
 		Saloon,
 		Bank,
@@ -22,19 +22,20 @@ public class BobMiner : Agent {
 	private int Thirst = 0;
 	// higher value means more fatigue.
 	private int Fatigue = 0;
-	private List<TileSprite> path = new List<TileSprite>();
+	private List<Node> path = new List<Node>();
 
 	public void Awake() {
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<BobMiner>();
 		stateMachine.Init(this, GoHomeAndSleepTillRested.Instance);
-		currentPosition = new Position(0,0);
-		Time.fixedDeltaTime = 0.5f;
+		currentPosition = new Position(Locations.SHACK.x, Locations.SHACK.y - 1);
+		transform.position = currentPosition.toVector3 ();
+		Time.fixedDeltaTime = 0.4f;
 	}
 
 	public void FixedUpdate() {
 		if (path.Count > 0) {
-			TileSprite nextTile = path [0];
+			TileSprite nextTile = path [0].tile;
 			path.RemoveAt (0);
 			transform.position = nextTile.getPosition ().toVector3 ();
 		}
@@ -52,22 +53,17 @@ public class BobMiner : Agent {
 
 	public void ChangeLocation(Location newLocation) {
 		if (newLocation == Location.Bank) {
-			//this.transform.position = Locations.EXIT - new Vector3 (0, 1, 0);
-			targetPosition = new Position(Locations.EXIT.x, Locations.EXIT.y - 1);
+			targetPosition = Locations.BANK;
 		} else if (newLocation == Location.Goldmine) {
-			//this.transform.position = Locations.GOLDMINE - new Vector3 (0, 1, 0);
-			targetPosition = new Position(Locations.GOLDMINE.x, Locations.GOLDMINE.y - 1);
+			targetPosition = Locations.GOLDMINE;
 		} else if (newLocation == Location.Saloon) {
-			//this.transform.position = new Vector3 (0, 0, 0);
-			targetPosition = new Position(0, 0);
+			targetPosition = Locations.SALOON;
 		} else if (newLocation == Location.Shack) {
-			//this.transform.position = Locations.SHACK - new Vector3 (0, 1, 0);
-			targetPosition = new Position(Locations.SHACK.x, Locations.SHACK.y - 1);
+			targetPosition = Locations.SHACK;
 		} else {
 			// not happen.
 		}
 
-		// TODO: calculate path
 		path.Clear();
 		path.AddRange(boardManager.findPath(currentPosition, targetPosition));
 		currentPosition = targetPosition;

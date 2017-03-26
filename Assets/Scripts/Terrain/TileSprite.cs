@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class TileSprite : MonoBehaviour {
 
-	public int cost;
-	private Position position;
+	public bool blocked;
+	public Position position;
+
 
 	// Use this for initialization
 	void Start () {
