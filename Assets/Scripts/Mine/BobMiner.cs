@@ -35,7 +35,7 @@ public enum Location {
 
 	public void FixedUpdate() {
 		if (path.Count > 0) {
-			TileSprite nextTile = path [0].tile;
+			Tile nextTile = path [0].tile;
 			path.RemoveAt (0);
 			transform.position = nextTile.getPosition ().toVector3 ();
 		}

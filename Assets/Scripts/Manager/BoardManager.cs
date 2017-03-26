@@ -36,7 +36,7 @@ public class BoardManager : MonoBehaviour {
 	private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 	private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
 
-	private TileSprite[,] gridWorld = new TileSprite[columns, rows];
+	private Tile[,] gridWorld = new Tile[columns, rows];
 
 	//Sets up the outer walls and floor (background) of the game board.
 	private void BoardSetup ()
@@ -55,7 +55,7 @@ public class BoardManager : MonoBehaviour {
 					GameObject toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)];
 					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
-					TileSprite tileSprite = instance.GetComponent<TileSprite> ();
+					Tile tileSprite = instance.GetComponent<Tile> ();
 					tileSprite.setPosition (position);
 					gridWorld [x, y] = tileSprite;
 				}
@@ -108,8 +108,8 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	public List<Node> findPath(Position currentPosition, Position targetPosition) {
-		TileSprite currentTile = gridWorld [currentPosition.x, currentPosition.y];
-		TileSprite targetTile = gridWorld [targetPosition.x, targetPosition.y];
+		Tile currentTile = gridWorld [currentPosition.x, currentPosition.y];
+		Tile targetTile = gridWorld [targetPosition.x, targetPosition.y];
 
 		List<Node> open = new List<Node> ();
 		List<Node> close = new List<Node> ();

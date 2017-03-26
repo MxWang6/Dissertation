@@ -3,11 +3,11 @@
 public class Node
 {
 	public Node parent;
-	public TileSprite tile;
+	public Tile tile;
 	public int gcost;
 	public int hcost;
 
-	public Node (TileSprite tile)
+	public Node (Tile tile)
 	{
 		this.tile = tile;
 	}

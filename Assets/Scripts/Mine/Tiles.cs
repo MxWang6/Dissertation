@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Tile {
+public enum Tiles {
 	LessGrass,
 	Grass,
 	MoreGrass,
