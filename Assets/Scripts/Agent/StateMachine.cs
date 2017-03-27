@@ -45,7 +45,27 @@ public class StateMachine<T> where T: Agent {
 	}
 
 	public void RevertToPreviousState(){
-		if (previouState != null)
-			ChangeState(previouState);
+		if (previouState != null) {
+			ChangeState (previouState);
+		}
 	}
+
+	// add message here
+//	public bool HandleMessage(Telegram telegram)
+//	{
+//		if(globalState != null){
+//
+//			if(globalState.OnMessage(agent,telegram)){
+//				return true;
+//			}
+//		}
+//		if (currentState != null) {
+//
+//			if (currentState.OnMessage (agent, telegram)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+
 }

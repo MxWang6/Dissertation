@@ -17,9 +17,10 @@ public class EnterMineAndDigForNuggets : State<BobMiner> {
 	}
 
 	public override void Enter (BobMiner m) {
-		Debug.Log("Entering the goldmine...");
+		Debug.Log("Bob: Entering the goldmine...");
 		m.ChangeLocation (BobMiner.Location.Goldmine);
 	}
+		
 
 	public override void Execute (BobMiner m) {
 		if (m.IsPocketFull ()) {
@@ -30,7 +31,7 @@ public class EnterMineAndDigForNuggets : State<BobMiner> {
 			m.ChangeState (QuenchThirstState.Instance);
 		} else {
 			m.DigNugget();
-			Debug.Log("Pickin' up a nugget and that's..." + m.getCarriedGold());
+			Debug.Log("Bob: Pickin' up a nugget and that's..." + m.getCarriedGold());
 		}
 
 		//    m.MoveToward (GameObject.Find("GameManager").GetComponent<BoardManager>().gridMap["bank"]);
@@ -38,6 +39,9 @@ public class EnterMineAndDigForNuggets : State<BobMiner> {
 	}
 
 	public override void Exit(BobMiner m) {
-		Debug.Log("Leaving the mine...");
+		Debug.Log("Bob: Leaving the mine...");
 	}
+
+
+
 }

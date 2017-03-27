@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GoHomeAndSleepTillRested : State<BobMiner> {
 
+
+
+
 	private static readonly GoHomeAndSleepTillRested instance = new GoHomeAndSleepTillRested();
 
 	private GoHomeAndSleepTillRested() {
@@ -17,9 +20,11 @@ public class GoHomeAndSleepTillRested : State<BobMiner> {
 	}
 		
 	public override void Enter (BobMiner m) {
-		Debug.Log("Arrive Home.");
-		m.GoBackHome ();
-		m.ChangeLocation (BobMiner.Location.Shack);
+		if (m.GetLocation () != BobMiner.Location.Shack) {
+			Debug.Log("Bob: Arrive Home.");
+			m.GoBackHome ();
+			m.ChangeLocation (BobMiner.Location.Shack);	
+		}
 	}
 
 	public override void Execute (BobMiner m) {
@@ -27,15 +32,33 @@ public class GoHomeAndSleepTillRested : State<BobMiner> {
 			if (m.IsThirsty ()) {
 				m.ChangeState (QuenchThirstState.Instance);
 			} else {
+				Debug.Log ("Bob: Time to work");
 				m.ChangeState (EnterMineAndDigForNuggets.Instance);
 			}
 		} else {
-			Debug.Log (" ZZZZZ....");
+			Debug.Log ("Bob: ZZZZZ....");
 			m.SleepAndRest ();
 		}
 	}
 
 	public override void Exit(BobMiner m) {
-		Debug.Log ("Wake up and leave home.");
+		//Debug.Log ("it is time to eat something.");
 	}
+
+//	public override bool OnMessage(BobMiner m, Telegram telegram)
+//	{
+//		switch (telegram.messageType)
+//		{
+//		case MessageType.HiHoneyImHome:
+//			return false;
+//		case MessageType.StewsReady:
+//			Debug.Log("Message handled by " + m + " at time ");
+//			Debug.Log("Okay Hun, ahm a comin'!");
+//			m.ChangeState(EatStew.Instance);
+//			return true;
+//		default:
+//			return false;
+//		}
+//	}
+
 }

@@ -15,6 +15,7 @@ public enum Location {
 	private StateMachine<BobMiner> stateMachine;
 	private Position currentPosition;
 	private Position targetPosition;
+	private Location location;
 	private int GoldCarried = 0;
 	private int GoldInBank = 0;
 	private int DailyDepositedGoldInBank = 0;
@@ -22,12 +23,19 @@ public enum Location {
 	private int Thirst = 0;
 	// higher value means more fatigue.
 	private int Fatigue = 0;
+	// 10 means stew is full.
+	private int Stew = 0;
+
 	private List<Node> path = new List<Node>();
+
+	public delegate void BobBackHome();
+	public static event BobBackHome OnBobBackHome;
 
 	public void Awake() {
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<BobMiner>();
 		stateMachine.Init(this, GoHomeAndSleepTillRested.Instance);
+
 		currentPosition = new Position(Locations.SHACK.x, Locations.SHACK.y - 1);
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.4f;
@@ -52,6 +60,10 @@ public enum Location {
 		stateMachine.ChangeState(e);
 	}
 
+	public void RevertToPreviousState(){
+		stateMachine.RevertToPreviousState();
+	}
+
 	public void ChangeLocation(Location newLocation) {
 		if (newLocation == Location.Bank) {
 			targetPosition = Locations.BANK;
@@ -61,6 +73,10 @@ public enum Location {
 			targetPosition = Locations.SALOON;
 		} else if (newLocation == Location.Shack) {
 			targetPosition = Locations.SHACK;
+			//trigger the event 
+			if (OnBobBackHome != null) {
+					OnBobBackHome ();
+			}
 		} else {
 			// not happen.
 		}
@@ -68,7 +84,9 @@ public enum Location {
 		path.Clear();
 		path.AddRange(boardManager.getGridWorld().findPath(currentPosition, targetPosition));
 		currentPosition = targetPosition;
+		location = newLocation;
 	}
+
 
 	public void DigNugget() {
 		GoldCarried ++;
@@ -129,8 +147,12 @@ public enum Location {
 		return DailyDepositedGoldInBank >= 20;
 	}
 
-	public Position GetLocation() {
+	public Position GetPosition() {
 		return currentPosition;
+	}
+
+	public Location GetLocation() {
+		return location;
 	}
 
 	public int getCarriedGold() {
@@ -140,4 +162,41 @@ public enum Location {
 	public int getGoldInBank() {
 		return GoldInBank;
 	}
+
+	public void EatStew() {
+		Stew -= 3;
+		if (Stew < 0) {
+			Stew = 0;
+
+		}
+	}
+
+	public bool StewFullyEaten() {
+		return Stew == 0;
+	}
+
+	// Elsa send Bob message
+	public void OnEnable()
+	{
+		ElsaWife.OnCookIsReady += CookingIsReady;
+		JesseOutlaw.OnRobBank += InRobBank;
+	}
+
+	public void OnDisable()
+	{
+		ElsaWife.OnCookIsReady -= CookingIsReady;
+		JesseOutlaw.OnRobBank -= InRobBank;
+	}	
+
+	public void CookingIsReady(){
+		Debug.Log ("Elsa tells Bob: Dinner is fully cooked. Ready to eat...");
+		Stew = 10;
+		this.ChangeState (EatStewState.Instance);
+	}
+
+	public void InRobBank(){
+		Debug.Log ("Jesse send message: Going to rob bank......");
+
+	}
+
 }

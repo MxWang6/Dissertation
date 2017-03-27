@@ -3,7 +3,8 @@ using System.Collections;
 
 public abstract class Agent : MonoBehaviour {
 
+
 	public abstract void Update ();
-//	abstract public bool HandleMessage(Telegram telegram);
+//	public abstract bool HandleMessage(Telegram telegram);
 //	abstract public bool HandleSenseEvent(Sense sense);
 }

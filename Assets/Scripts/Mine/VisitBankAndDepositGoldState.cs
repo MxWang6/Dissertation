@@ -17,7 +17,7 @@ public class VisitBankAndDepositGold : State<BobMiner> {
 	}
 
 	public override void Enter (BobMiner m) {
-		Debug.Log("Entering the bank...");
+		Debug.Log("Bob: Entering the bank...");
 		m.ChangeLocation (BobMiner.Location.Bank);
 	}
 
@@ -28,12 +28,13 @@ public class VisitBankAndDepositGold : State<BobMiner> {
 			m.ChangeState (EnterMineAndDigForNuggets.Instance);
 		} else {
 			m.DepositGoldToBank();
-			Debug.Log("Depositing gold. Total savings now:" + m.getGoldInBank());
+			Debug.Log("Bob: Depositing gold. Total savings now:" + m.getGoldInBank());
 		}
 	}
 
 	public override void Exit(BobMiner m) {
-		Debug.Log("Leaving the bank...");
+		Debug.Log("Bob: Leaving the bank...");
 	}
+
 
 }

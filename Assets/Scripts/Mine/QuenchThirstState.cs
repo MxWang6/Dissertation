@@ -17,7 +17,7 @@ public class QuenchThirstState : State<BobMiner>
 	}
 
 	public override void Enter (BobMiner m) {
-		Debug.Log("Arrive the Bistro.");
+		Debug.Log("Bob: Arrive the Bistro.");
 		m.ChangeLocation (BobMiner.Location.Saloon);
 	}
 
@@ -26,7 +26,7 @@ public class QuenchThirstState : State<BobMiner>
 			m.ChangeState (EnterMineAndDigForNuggets.Instance);
 
 		} else {
-			Debug.Log ("Drinking water... ");
+			Debug.Log ("Bob: Drinking water... ");
 			m.quenchThirst ();
 			if (m.IsThirstQuenched ()) {
 				m.ChangeState (EnterMineAndDigForNuggets.Instance);
@@ -35,6 +35,8 @@ public class QuenchThirstState : State<BobMiner>
 	}
 
 	public override void Exit(BobMiner m) {
-		Debug.Log ("Leave the Bistro.");
+		Debug.Log ("Bob: Leave the Bistro.");
 	}
+
+
 }
