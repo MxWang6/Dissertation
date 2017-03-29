@@ -17,7 +17,8 @@ public class LurkInCemeteryState : State<JesseOutlaw>
 
 	public override void Enter (JesseOutlaw outlaw) {
 
-		Debug.Log("Jesse: Arrived in the cemetery!"); 
+		Debug.Log("Jesse: Arrived in the cemetery!");
+		outlaw.ChangeLocation (JesseOutlaw.Location.Cemetery);
 
 	}
 

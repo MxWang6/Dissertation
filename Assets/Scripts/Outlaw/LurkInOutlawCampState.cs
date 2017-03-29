@@ -15,7 +15,12 @@ public class LurkInOutlawCampState : State<JesseOutlaw>
 	}
 	public override void Enter (JesseOutlaw outlaw) {
 
-		Debug.Log("Jesse: ohoh,sweet home"); 
+		if (outlaw.GetLocation () != JesseOutlaw.Location.OutlawCamp) {
+			Debug.Log ("Jesse: ohoh,Arrive sweet home"); 
+			outlaw.ChangeLocation (JesseOutlaw.Location.OutlawCamp);
+		} else {
+			Debug.Log ("Jesse: ohoh, Sweet home"); 
+		}
 	}
 
 	public override void Execute (JesseOutlaw outlaw) {

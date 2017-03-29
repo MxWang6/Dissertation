@@ -35,8 +35,10 @@ public enum Location {
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<BobMiner>();
 		stateMachine.Init(this, GoHomeAndSleepTillRested.Instance);
+	}
 
-		currentPosition = new Position(Locations.SHACK.x, Locations.SHACK.y - 1);
+	public void Start() {
+		currentPosition = Locations.SHACK;
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.4f;
 	}

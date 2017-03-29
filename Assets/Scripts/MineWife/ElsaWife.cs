@@ -75,9 +75,16 @@ public class ElsaWife : Agent {
 		stateMachine = new StateMachine<ElsaWife>();
 		stateMachine.Init(this, DoHouseWork.Instance);
 		Debug.Log("Elsa: Wouderful day!"); 
-		currentPosition = new Position(Locations.SHACK.x, Locations.SHACK.y);
-		transform.position = currentPosition.toVector3();
+	}
+
+	public void Start() {
+		currentPosition = Locations.SHACK;
+		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.5f;
+	}
+
+	public Position GetPosition() {
+		return currentPosition;
 	}
 
 	public override void Update() {

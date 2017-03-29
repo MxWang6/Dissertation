@@ -16,11 +16,13 @@ public class Undertaker : Agent {
 		stateMachine = new StateMachine<Undertaker>();
 		//stateMachine.Init(this, LurkInOutlawCampState.Instance);
 		//this.RandomValue ();
-		//	currentPosition = new Position(Locations.OutlawCamp.x, Locations.OutlawCamp.y);
-		currentPosition = new Position(10,2);
-		transform.position = currentPosition.toVector3();
-		Time.fixedDeltaTime = 0.5f;
 	}
+
+	public void Start() {
+		currentPosition = Locations.CEMETERY;
+		transform.position = currentPosition.toVector3 ();
+		Time.fixedDeltaTime = 0.4f;
+	} 
 
 	public override void Update(){
 

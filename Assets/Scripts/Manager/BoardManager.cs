@@ -25,10 +25,15 @@ public class BoardManager : MonoBehaviour {
 	public Count wallCount = new Count (5, 9);                      //Lower and upper limit for our random number of walls per level.
 	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
 
+	// add the location prefab here
 	public GameObject goldMine;
 	public GameObject shack;
 	public GameObject bank;
 	public GameObject saloon;
+	public GameObject outlawCamp;
+	public GameObject sheriffOffice;
+	public GameObject cemetery;
+
 	public GameObject[] floorTiles;
 	public GameObject[] outerWallTiles; 
 
@@ -122,6 +127,24 @@ public class BoardManager : MonoBehaviour {
 		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
 		Instantiate(saloon, position.toVector3(), Quaternion.identity);
 		Locations.SALOON = position;
+		gridWorld.getTile (position).blocked = false;
+
+		// add other location here - outlawcamp
+		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(outlawCamp, position.toVector3(), Quaternion.identity);
+		Locations.OUTLAWCAMP = position;
+		gridWorld.getTile (position).blocked = false;
+
+		// sheriff office
+		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(sheriffOffice, position.toVector3(), Quaternion.identity);
+		Locations.OFFICE = position;
+		gridWorld.getTile (position).blocked = false;
+
+		// CEMETERY
+		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(cemetery, position.toVector3(), Quaternion.identity);
+		Locations.CEMETERY = position;
 		gridWorld.getTile (position).blocked = false;
 	}
 		
