@@ -13,6 +13,7 @@ public class ElsaWife : Agent {
 	// higher value represnts more cooked. 10 means fully cooked.
 	private int cooking;
 	private int tired;
+	private int printValue = 0;
 
 	public void OnEnable()
 	{
@@ -45,12 +46,12 @@ public class ElsaWife : Agent {
 
 	public void HouseWork(){
 
-		tired += 3;
+		tired += 1;
 	}
 
 	public bool GoToBathroom(){
 
-		if (tired >= 5) {
+		if (tired >= 10) {
 			return true;
 		} else {
 			return false;
@@ -88,7 +89,18 @@ public class ElsaWife : Agent {
 	}
 
 	public override void Update() {
+
+		printValue++;
 		stateMachine.Update ();
+	}
+
+	public int getPrintValue(){
+
+		return printValue;
+	}
+
+	public void zeroPrintValue(){
+		printValue = 0;
 	}
 
 	public void ChangeState(State<ElsaWife> state){

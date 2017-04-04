@@ -33,6 +33,7 @@ public class BoardManager : MonoBehaviour {
 	public GameObject outlawCamp;
 	public GameObject sheriffOffice;
 	public GameObject cemetery;
+	public GameObject undertaker;
 
 	public GameObject[] floorTiles;
 	public GameObject[] outerWallTiles; 
@@ -146,6 +147,13 @@ public class BoardManager : MonoBehaviour {
 		Instantiate(cemetery, position.toVector3(), Quaternion.identity);
 		Locations.CEMETERY = position;
 		gridWorld.getTile (position).blocked = false;
+
+		// Udertaker
+		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+		Instantiate(undertaker, position.toVector3(), Quaternion.identity);
+		Locations.UNDERTAKER = position;
+		gridWorld.getTile (position).blocked = false;
+
 	}
 		
 	public GridWorld getGridWorld() {

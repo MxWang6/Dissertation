@@ -11,4 +11,5 @@ public class Locations {
 	public static Position OUTLAWCAMP = new Position (7, 3);
 	public static Position OFFICE = new Position (5, 4);
 	public static Position CEMETERY = new Position (14, 8);
+	public static Position UNDERTAKER = new Position (0, 8);
 }

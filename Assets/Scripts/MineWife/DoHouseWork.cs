@@ -26,15 +26,21 @@ public class DoHouseWork : State<ElsaWife> {
 		if (!mw.GoToBathroom ()) {
 			switch (Random.Range (1, 3)) {
 			case 1:
-				Debug.Log ("Elsa: Moppin' the floor"); 
+				if (mw.getPrintValue () == 1) {
+					Debug.Log ("Elsa: Moppin' the floor");
+				}
 				mw.HouseWork ();
 				break;
 			case 2:
-				Debug.Log ("Elsa: Washin' the dishes"); 
+				if (mw.getPrintValue () == 1) {
+					Debug.Log ("Elsa: Washin' the dishes"); 
+				}
 				mw.HouseWork ();
 				break;
 			case 3:
-				Debug.Log ("Elsa: Makin' the bed"); 
+				if (mw.getPrintValue () == 1) {
+					Debug.Log ("Elsa: Makin' the bed");
+				}
 				mw.HouseWork ();
 				break;
 			default:
@@ -49,6 +55,7 @@ public class DoHouseWork : State<ElsaWife> {
 
 	public override void Exit(ElsaWife mw) {
 
+		//mw.zeroPrintValue ();
 	}
 
 }

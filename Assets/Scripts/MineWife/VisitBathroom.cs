@@ -30,6 +30,7 @@ public class VisitBathroom : State<ElsaWife> {
 	public override void Exit(ElsaWife mw)
 	{
 		Debug.Log("Elsa: Leavin' the Jon");
+		mw.zeroPrintValue ();
 	}
 
 

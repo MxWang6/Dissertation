@@ -20,9 +20,6 @@ public class StateMachine<T> where T: Agent {
 	}
 
 	public void Update () {
-//		BoardManager boardScript = GameObject.Fi nd("GameManager").GetComponent<BoardManager>();
-//		Vector3 position = boardScript.worldGrid[agent.gridPosition.x, agent.gridPosition.y].transform.position;
-//		agent.transform.position = new Vector3(position.x, position.y, agent.transform.position.z);
 		if (this.globalState != null) {
 			this.globalState.Execute (this.agent);
 		}
@@ -49,23 +46,5 @@ public class StateMachine<T> where T: Agent {
 			ChangeState (previouState);
 		}
 	}
-
-	// add message here
-//	public bool HandleMessage(Telegram telegram)
-//	{
-//		if(globalState != null){
-//
-//			if(globalState.OnMessage(agent,telegram)){
-//				return true;
-//			}
-//		}
-//		if (currentState != null) {
-//
-//			if (currentState.OnMessage (agent, telegram)) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
 
 }

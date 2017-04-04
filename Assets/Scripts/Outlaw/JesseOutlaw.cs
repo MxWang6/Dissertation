@@ -10,6 +10,7 @@ public class JesseOutlaw : Agent {
 		Bank
 	};
 
+	private BobMiner Bob;
 	private BoardManager boardManager;
 	private StateMachine<JesseOutlaw> stateMachine;
 	private Position currentPosition;
@@ -17,9 +18,11 @@ public class JesseOutlaw : Agent {
 	private Location location;
 	private int FindOpportunity = 0;
 	private int Value = 0;
-	private int Thirst = 0;
 	private int TimeToRob = 0;
 	private int GoldCarried = 0;
+
+	private int waitedTime = 0;
+	private int createdTime = 0;
 
 	private List<Node> path = new List<Node>();
 
@@ -29,6 +32,7 @@ public class JesseOutlaw : Agent {
 
 	public void Awake() {
 
+		Bob = GameObject.Find("Miner").GetComponent<BobMiner>();
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<JesseOutlaw>();
 		stateMachine.Init(this, LurkInOutlawCampState.Instance);
@@ -37,7 +41,7 @@ public class JesseOutlaw : Agent {
 	public void Start() {
 		currentPosition = Locations.OUTLAWCAMP;
 		transform.position = currentPosition.toVector3 ();
-		Time.fixedDeltaTime = 0.4f;
+		Time.fixedDeltaTime = 0.5f;
 	} 
 
 	// add here...........
@@ -93,10 +97,10 @@ public class JesseOutlaw : Agent {
 		FindOpportunity = 0;
 	}
 
-	// send the message
+	// send the Event message that tell bob 
 	public bool RobBank(){
 
-		if (TimeToRob > 10) {
+		if (TimeToRob > 12) {
 			if (OnRobBank != null) {
 				OnRobBank ();
 			}
@@ -113,12 +117,17 @@ public class JesseOutlaw : Agent {
 	}
 
 	public int RobGoldInBank(){
-		GoldCarried = Random.Range (5, 10);
+
+		GoldCarried = Bob.decreseGoldInBank ();
+		//GoldCarried = Random.Range (5, 10);
+		return GoldCarried;
+	}
+
+	public int getGoldCarried(){
 		return GoldCarried;
 	}
 
 	// change location here
-
 	public void ChangeLocation(Location newLocation) {
 		if (newLocation == Location.OutlawCamp) {
 			targetPosition = Locations.OUTLAWCAMP;
@@ -144,4 +153,18 @@ public class JesseOutlaw : Agent {
 		return location;
 	}
 
+	public void rebornJesse(){
+
+		this.transform.position = Locations.OUTLAWCAMP.toVector3();
+		stateMachine.Init (this, LurkInOutlawCampState.Instance);
+	}
+
+	public void CreateTime () {
+		createdTime++;
+	}
+
+	public bool EnoughTimeToWait(){
+
+		return createdTime > 5;
+	}
 }

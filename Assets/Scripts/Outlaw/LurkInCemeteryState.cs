@@ -33,7 +33,7 @@ public class LurkInCemeteryState : State<JesseOutlaw>
 		}else
 		{
 			outlaw.LukIn ();
-			Debug.Log ("Jess: Lurking in the cemetery");
+			Debug.Log("Jess: Lurking in the cemetery");
 		}
 		}
 

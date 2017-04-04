@@ -19,6 +19,7 @@ public enum Location {
 	private int GoldCarried = 0;
 	private int GoldInBank = 0;
 	private int DailyDepositedGoldInBank = 0;
+	private int RobGold = 0;
 	// higher value means more thirsty.
 	private int Thirst = 0;
 	// higher value means more fatigue.
@@ -31,6 +32,9 @@ public enum Location {
 	public delegate void BobBackHome();
 	public static event BobBackHome OnBobBackHome;
 
+	public delegate void JesseRobBank();
+	public static event JesseRobBank OnJesseRobBank;
+
 	public void Awake() {
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<BobMiner>();
@@ -40,7 +44,7 @@ public enum Location {
 	public void Start() {
 		currentPosition = Locations.SHACK;
 		transform.position = currentPosition.toVector3 ();
-		Time.fixedDeltaTime = 0.4f;
+		Time.fixedDeltaTime = 0.5f;
 	}
 
 	public void FixedUpdate() {
@@ -165,6 +169,18 @@ public enum Location {
 		return GoldInBank;
 	}
 
+	public int decreseGoldInBank(){
+
+		RobGold	= Random.Range (1, 4);
+		if (GoldInBank != 0) {
+			GoldInBank -= RobGold;
+			Debug.Log ("Bob's MONEY in bank is " + GoldInBank);
+		} else {
+			RobGold = 0;
+		}
+		return RobGold;
+	}
+
 	public void EatStew() {
 		Stew -= 3;
 		if (Stew < 0) {
@@ -177,7 +193,7 @@ public enum Location {
 		return Stew == 0;
 	}
 
-	// Elsa send Bob message
+	//  Bob receive message
 	public void OnEnable()
 	{
 		ElsaWife.OnCookIsReady += CookingIsReady;
@@ -198,6 +214,9 @@ public enum Location {
 
 	public void InRobBank(){
 		Debug.Log ("Jesse send message: Going to rob bank......");
+		if (OnJesseRobBank != null) {
+			OnJesseRobBank ();
+		}
 
 	}
 
