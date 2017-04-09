@@ -10,6 +10,7 @@ public class Undertaker : Agent {
 	};
 
 	private BoardManager boardManager;
+	private RegionalSenseManager senseManager;
 	private StateMachine<Undertaker> stateMachine;
 	private Position currentPosition;
 	private Position targetPosition;
@@ -19,16 +20,19 @@ public class Undertaker : Agent {
 	private List<Node> path = new List<Node>();
 
 	public void Awake() {
-
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<Undertaker>();
 		stateMachine.Init(this, HoverInOfficeState.Instance);
+
+		senseManager = GameObject.Find ("GameManager").GetComponent<RegionalSenseManager> ();
 	}
 
 	public void Start() {
 		currentPosition = Locations.UNDERTAKER;
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.5f;
+
+		senseManager.Register (this);
 	} 
 
 	public void FixedUpdate() {
@@ -110,4 +114,20 @@ public class Undertaker : Agent {
 		this.ChangeState (LookForBodyState.Instance);
 	}
 
+	// sensing
+	public override bool DetectsModality (Signal signal)
+	{
+		// not enabled
+		return false;
+	}
+
+	public override void Notify (Signal signal)
+	{
+		// do nothing.
+	}
+
+	public override Vector3 Position ()
+	{
+		return transform.position;
+	}
 }

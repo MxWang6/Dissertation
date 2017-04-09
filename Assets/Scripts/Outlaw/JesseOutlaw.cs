@@ -12,6 +12,7 @@ public class JesseOutlaw : Agent {
 
 	private BobMiner Bob;
 	private BoardManager boardManager;
+	private RegionalSenseManager senseManager;
 	private StateMachine<JesseOutlaw> stateMachine;
 	private Position currentPosition;
 	private Position targetPosition;
@@ -20,8 +21,6 @@ public class JesseOutlaw : Agent {
 	private int Value = 0;
 	private int TimeToRob = 0;
 	private int GoldCarried = 0;
-
-	private int waitedTime = 0;
 	private int createdTime = 0;
 
 	private List<Node> path = new List<Node>();
@@ -31,17 +30,20 @@ public class JesseOutlaw : Agent {
 	public static event GoToRobBank OnRobBank;
 
 	public void Awake() {
-
 		Bob = GameObject.Find("Miner").GetComponent<BobMiner>();
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<JesseOutlaw>();
 		stateMachine.Init(this, LurkInOutlawCampState.Instance);
+
+		senseManager = GameObject.Find ("GameManager").GetComponent<RegionalSenseManager> ();
 	}
 
 	public void Start() {
 		currentPosition = Locations.OUTLAWCAMP;
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.5f;
+
+		senseManager.Register (this);
 	} 
 
 	// add here...........
@@ -60,6 +62,10 @@ public class JesseOutlaw : Agent {
 			TimeToRob++;
 			stateMachine.Update ();
 		}
+
+		Signal signal = new Signal ();
+		signal.sender = this;
+		senseManager.AddSignal (signal);
 	}
 
 	public void ChangeState(State<JesseOutlaw> state){
@@ -139,6 +145,7 @@ public class JesseOutlaw : Agent {
 			// not happen.
 		}
 
+		path.ForEach ((step) => step.tile.highlighted = false);
 		path.Clear();
 		path.AddRange(boardManager.getGridWorld().findPath(currentPosition, targetPosition));
 		currentPosition = targetPosition;
@@ -166,5 +173,25 @@ public class JesseOutlaw : Agent {
 	public bool EnoughTimeToWait(){
 
 		return createdTime > 5;
+	}
+
+	// sensing
+	public override bool DetectsModality (Signal signal)
+	{
+		// only have sight.
+		return signal.modality is SightModality && signal.sender is WyattSheriff;
+	}
+
+	public override void Notify (Signal signal)
+	{
+		if (!targetPosition.Equals(Locations.OUTLAWCAMP)) {
+			Debug.Log ("Jesse: phew... I saw the sheriff, I am running away..."); 
+			ChangeLocation (Location.OutlawCamp);
+		}
+	}
+
+	public override Vector3 Position ()
+	{
+		return transform.position;
 	}
 }

@@ -11,6 +11,7 @@ public enum Location {
 		Shack
 	};
 	private BoardManager boardManager;
+	private RegionalSenseManager senseManager;
 
 	private StateMachine<BobMiner> stateMachine;
 	private Position currentPosition;
@@ -39,12 +40,16 @@ public enum Location {
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<BobMiner>();
 		stateMachine.Init(this, GoHomeAndSleepTillRested.Instance);
+
+		senseManager = GameObject.Find ("GameManager").GetComponent<RegionalSenseManager> ();
 	}
 
 	public void Start() {
 		currentPosition = Locations.SHACK;
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.5f;
+
+		senseManager.Register (this);
 	}
 
 	public void FixedUpdate() {
@@ -60,6 +65,9 @@ public enum Location {
 			Thirst++;
 			stateMachine.Update ();
 		}
+		Signal signal = new Signal ();
+		signal.sender = this;
+		senseManager.AddSignal (signal);
 	}
 
 	public void ChangeState(State<BobMiner> e) {
@@ -87,6 +95,7 @@ public enum Location {
 			// not happen.
 		}
 
+		path.ForEach ((step) => step.tile.highlighted = false);
 		path.Clear();
 		path.AddRange(boardManager.getGridWorld().findPath(currentPosition, targetPosition));
 		currentPosition = targetPosition;
@@ -217,7 +226,25 @@ public enum Location {
 		if (OnJesseRobBank != null) {
 			OnJesseRobBank ();
 		}
-
+	}
+	// sensing
+	public override bool DetectsModality (Signal signal)
+	{
+		// only have sight.
+		// only worry about outlaw.
+		return signal.modality is SightModality && signal.sender is JesseOutlaw;
 	}
 
+	public override void Notify (Signal signal)
+	{
+		if (!targetPosition.Equals(Locations.BANK)) {
+			Debug.Log ("Bob: I just saw Outlaw. I am going to bank to protect my gold.");
+			ChangeLocation (Location.Bank);
+		}
+	}
+
+	public override Vector3 Position ()
+	{
+		return transform.position;
+	}
 }

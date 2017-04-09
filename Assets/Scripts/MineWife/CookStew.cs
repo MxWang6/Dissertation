@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CookStew : State<ElsaWife> {
 
-
-
 	private static readonly CookStew instance = new CookStew();
 	private CookStew() {
 		// private constructor to prevent instantiation.
@@ -16,6 +14,7 @@ public class CookStew : State<ElsaWife> {
 			return instance;
 		}
 	}
+
 	public override void Enter(ElsaWife mw)
 	{
 		if (!mw.isCooking ()) {
@@ -39,7 +38,4 @@ public class CookStew : State<ElsaWife> {
 		mw.FinishCooking ();
 		Debug.Log("Elsa: Puttin' the stew on the table");
 	}
-
-
-
 }

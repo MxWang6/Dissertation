@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DoHouseWork : State<ElsaWife> {
-
-
+	
 	private static readonly DoHouseWork instance = new DoHouseWork();
 	private DoHouseWork() {
 		// private constructor to prevent instantiation.

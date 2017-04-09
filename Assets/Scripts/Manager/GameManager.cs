@@ -20,8 +20,6 @@ public class GameManager : MonoBehaviour {
 
 		boardScript = GetComponent<BoardManager>();
 		InitGame ();
-
-		//GameObject.Find("Miner").GetComponent<Miner>().gridPosition = new Gridlocation( Random.Range(1, (boardScript.GameColumns / 2)), Random.Range(1, (boardScript.GameRows / 2)) );
 	}
 
 	void InitGame(){

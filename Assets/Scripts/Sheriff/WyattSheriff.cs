@@ -13,10 +13,10 @@ public class WyattSheriff : Agent {
 		Cemetery
 	};
 
-	private BobMiner Bob;
 	private JesseOutlaw Jesse;
 	private ElsaWife Elsa;
 	private BoardManager boardManager;
+	private RegionalSenseManager senseManager;
 	private StateMachine<WyattSheriff> stateMachine;
 	private Position currentPosition;
 	private Position targetPosition;
@@ -33,19 +33,21 @@ public class WyattSheriff : Agent {
 	public static event KillJesse OnKillJesse;
 
 	public void Awake() {
-		Bob = GameObject.Find("Miner").GetComponent<BobMiner>();
 		Jesse = GameObject.Find ("Outlaw").GetComponent<JesseOutlaw> ();
 //		Elsa = GameObject.Find ("Wife").GetComponent<ElsaWife> ();
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<WyattSheriff>();
 		stateMachine.Init(this, RandomCheckState.Instance);
 
+		senseManager = GameObject.Find ("GameManager").GetComponent<RegionalSenseManager> ();
 	}
 
 	public void Start() {
 		currentPosition = Locations.OFFICE;
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.5f;
+
+		senseManager.Register (this);
 	} 
 
 	public void FixedUpdate() {
@@ -63,6 +65,11 @@ public class WyattSheriff : Agent {
 			
 			stateMachine.Update ();
 		}
+
+		Signal signal = new Signal ();
+		signal.sender = this;
+		signal.strength = 6;
+		senseManager.AddSignal (signal);
 	}
 
 	public void ChangeState(State<WyattSheriff> state){
@@ -92,6 +99,7 @@ public class WyattSheriff : Agent {
 			// not happen.
 		}
 
+		path.ForEach ((step) => step.tile.highlighted = false);
 		path.Clear();
 		path.AddRange(boardManager.getGridWorld().findPath(currentPosition, targetPosition));
 		currentPosition = targetPosition;
@@ -116,15 +124,12 @@ public class WyattSheriff : Agent {
 	}
 
 	public bool isOutlawHere(){
-
-
-
 		return neiborhoodCompare();
 	}
 
 	public bool isOutlawDead(){
-		
 		Jesse.ChangeState(WaitRebornState.Instance);
+
 		return true;
 	}
 
@@ -188,5 +193,26 @@ public class WyattSheriff : Agent {
 	public void InJesseRobBank(){
 
 		Debug.Log ("Bob send message to Wyatt: Jesse is robbing bank");
+	}
+
+	// sensing
+	public override bool DetectsModality (Signal signal)
+	{
+		// only have sight.
+		// only worry about sensing the outlaw. And ignore all others.
+		return signal.modality is SightModality && signal.sender is JesseOutlaw;
+	}
+
+	public override void Notify (Signal signal)
+	{
+		if (signal.sender.Position().Equals(Locations.BANK.toVector3 ())) {
+			Debug.Log ("Wyatt: freeze... I am shooting outlaw dead..."); 
+			isOutlawDead ();
+		}
+	}
+
+	public override Vector3 Position ()
+	{
+		return transform.position;
 	}
 }

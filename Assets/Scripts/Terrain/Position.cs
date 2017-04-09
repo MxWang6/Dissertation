@@ -12,4 +12,18 @@ public class Position {
 	public Vector3 toVector3() {
 		return new Vector3 (x, y, 0f);
 	}
+
+	public override bool Equals (object obj)
+	{
+		if (!(obj is Position)) {
+			return false;
+		}
+
+		Position thePostion = (Position) obj;
+		if (thePostion.x == x && thePostion.y == y) {
+			return true;
+		}
+
+		return false;
+	}
 }

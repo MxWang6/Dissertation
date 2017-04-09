@@ -15,6 +15,8 @@ public class ElsaWife : Agent {
 	private int tired;
 	private int printValue = 0;
 
+	private RegionalSenseManager senseManager;
+
 	public void OnEnable()
 	{
 		BobMiner.OnBobBackHome += BobIsBackHome;
@@ -76,12 +78,16 @@ public class ElsaWife : Agent {
 		stateMachine = new StateMachine<ElsaWife>();
 		stateMachine.Init(this, DoHouseWork.Instance);
 		Debug.Log("Elsa: Wouderful day!"); 
+
+		senseManager = GameObject.Find ("GameManager").GetComponent<RegionalSenseManager> ();
 	}
 
 	public void Start() {
 		currentPosition = Locations.SHACK;
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.5f;
+
+		senseManager.Register (this);
 	}
 
 	public Position GetPosition() {
@@ -110,5 +116,22 @@ public class ElsaWife : Agent {
 		
 	public void RevertToPreviousState(){
 		stateMachine.RevertToPreviousState();
+	}
+
+	// sensing
+	public override bool DetectsModality (Signal signal)
+	{
+		// not enabled
+		return false;
+	}
+
+	public override void Notify (Signal signal)
+	{
+		// Do nothing.
+	}
+
+	public override Vector3 Position ()
+	{
+		return transform.position;
 	}
 }
