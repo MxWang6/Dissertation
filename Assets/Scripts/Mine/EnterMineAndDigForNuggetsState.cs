@@ -33,8 +33,6 @@ public class EnterMineAndDigForNuggets : State<BobMiner> {
 			m.DigNugget();
 			Debug.Log("Bob: Pickin' up a nugget and that's..." + m.getCarriedGold());
 		}
-
-		//    m.MoveToward (GameObject.Find("GameManager").GetComponent<BoardManager>().gridMap["bank"]);
 		
 	}
 

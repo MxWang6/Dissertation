@@ -20,28 +20,47 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 		
-	private const int columns = 27;                                         //Number of columns in our game board.
-	private const int rows = 12;                                            //Number of rows in our game board.
-	public Count wallCount = new Count (5, 9);                      //Lower and upper limit for our random number of walls per level.
-	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
+	private const int columns = 60;                                         //Number of columns in our game board.
+	private const int rows = 27;                                            //Number of rows in our game board.
+//	public Count wallCount = new Count (5, 9);                      //Lower and upper limit for our random number of walls per level.
+//	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
 
 	// add the location prefab here
 	public GameObject goldMine;
 	public GameObject shack;
 	public GameObject bank;
 	public GameObject saloon;
-	public GameObject outlawCamp;
-	public GameObject sheriffOffice;
-	public GameObject cemetery;
-	public GameObject undertaker;
 
 	public GameObject[] floorTiles;
 	public GameObject[] outerWallTiles; 
+
+	// add the Monster prefab here
+	public GameObject[] monsterTiles;
+	public int monsterCount;
 
 	private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 	private List <Vector3> gridPositions = new List <Vector3> ();   //A list of possible locations to place tiles.
 
 	private GridWorld gridWorld = new GridWorld(columns, rows);
+
+	void InitialiseList()
+	{
+		
+		//Clear our list gridPositions.
+		gridPositions.Clear ();
+
+		//Loop through x axis (columns).
+		for(int x = 1; x < columns-1; x++)
+		{
+			//Within each column, loop through y axis (rows).
+			for(int y = 1; y < rows-1; y++)
+			{
+				//At each index add a new Vector3 to our list with the x and y coordinates of that position.
+				gridPositions.Add (new Vector3(x, y, 0f));
+			}
+		}
+
+	}
 
 	//Sets up the outer walls and floor (background) of the game board.
 	private void BoardSetup ()
@@ -95,18 +114,19 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
-	private void LayoutObjectAtRandom (GameObject obj)
-	{
-
-		Vector3 randomPosition = RandomPosition();
-		Instantiate(obj, randomPosition, Quaternion.identity);
-	}
+//	private void LayoutObjectAtRandom (GameObject obj)
+//	{
+//
+//		Vector3 randomPosition = RandomPosition();
+//		Instantiate(obj, randomPosition, Quaternion.identity);
+//	}
 
 	//SetupScene initializes our level and calls the previous functions to lay out the game board
 	public void SetupScene (int level)
 	{
 		BoardSetup();
 
+		InitialiseList ();
 
 		Position position = new Position (Random.Range (0, columns), Random.Range (0, rows));
 		Instantiate(bank, position.toVector3(), Quaternion.identity);
@@ -130,29 +150,9 @@ public class BoardManager : MonoBehaviour {
 		Locations.SALOON = position;
 		gridWorld.getTile (position).blocked = false;
 
-		// add other location here - outlawcamp
-		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(outlawCamp, position.toVector3(), Quaternion.identity);
-		Locations.OUTLAWCAMP = position;
-		gridWorld.getTile (position).blocked = false;
+		//int enemyCount = (int)Mathf.Log(level, 2f);
+		LayoutObjectAtRandom (monsterTiles,monsterCount,monsterCount);
 
-		// sheriff office
-		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(sheriffOffice, position.toVector3(), Quaternion.identity);
-		Locations.OFFICE = position;
-		gridWorld.getTile (position).blocked = false;
-
-		// CEMETERY
-		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(cemetery, position.toVector3(), Quaternion.identity);
-		Locations.CEMETERY = position;
-		gridWorld.getTile (position).blocked = false;
-
-		// Udertaker
-		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(undertaker, position.toVector3(), Quaternion.identity);
-		Locations.UNDERTAKER = position;
-		gridWorld.getTile (position).blocked = false;
 
 	}
 		

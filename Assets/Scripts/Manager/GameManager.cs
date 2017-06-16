@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour {
 	// allows us to use lists
 	public static GameManager instance = null;
 	public BoardManager boardScript;
-	private int level = 3;
+	private int level = 5;
 
 	void Awake(){
 

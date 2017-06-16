@@ -11,7 +11,7 @@ public enum Location {
 		Shack
 	};
 	private BoardManager boardManager;
-	private RegionalSenseManager senseManager;
+
 
 	private StateMachine<BobMiner> stateMachine;
 	private Position currentPosition;
@@ -26,22 +26,20 @@ public enum Location {
 	// higher value means more fatigue.
 	private int Fatigue = 0;
 	// 10 means stew is full.
-	private int Stew = 0;
+//	private int Stew = 0;
 
 	private List<Node> path = new List<Node>();
 
-	public delegate void BobBackHome();
-	public static event BobBackHome OnBobBackHome;
-
-	public delegate void JesseRobBank();
-	public static event JesseRobBank OnJesseRobBank;
+//	public delegate void BobBackHome();
+//	public static event BobBackHome OnBobBackHome;
+//
+//	public delegate void JesseRobBank();
+//	public static event JesseRobBank OnJesseRobBank;
 
 	public void Awake() {
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 		stateMachine = new StateMachine<BobMiner>();
 		stateMachine.Init(this, GoHomeAndSleepTillRested.Instance);
-
-		senseManager = GameObject.Find ("GameManager").GetComponent<RegionalSenseManager> ();
 	}
 
 	public void Start() {
@@ -49,7 +47,6 @@ public enum Location {
 		transform.position = currentPosition.toVector3 ();
 		Time.fixedDeltaTime = 0.5f;
 
-		senseManager.Register (this);
 	}
 
 	public void FixedUpdate() {
@@ -65,9 +62,7 @@ public enum Location {
 			Thirst++;
 			stateMachine.Update ();
 		}
-		Signal signal = new Signal ();
-		signal.sender = this;
-		senseManager.AddSignal (signal);
+
 	}
 
 	public void ChangeState(State<BobMiner> e) {
@@ -87,10 +82,10 @@ public enum Location {
 			targetPosition = Locations.SALOON;
 		} else if (newLocation == Location.Shack) {
 			targetPosition = Locations.SHACK;
-			//trigger the event 
-			if (OnBobBackHome != null) {
-					OnBobBackHome ();
-			}
+//			//trigger the event 
+//			if (OnBobBackHome != null) {
+//					OnBobBackHome ();
+//			}
 		} else {
 			// not happen.
 		}
@@ -190,61 +185,61 @@ public enum Location {
 		return RobGold;
 	}
 
-	public void EatStew() {
-		Stew -= 3;
-		if (Stew < 0) {
-			Stew = 0;
-
-		}
-	}
-
-	public bool StewFullyEaten() {
-		return Stew == 0;
-	}
+//	public void EatStew() {
+//		Stew -= 3;
+//		if (Stew < 0) {
+//			Stew = 0;
+//
+//		}
+//	}
+//
+//	public bool StewFullyEaten() {
+//		return Stew == 0;
+//	}
 
 	//  Bob receive message
-	public void OnEnable()
-	{
-		ElsaWife.OnCookIsReady += CookingIsReady;
-		JesseOutlaw.OnRobBank += InRobBank;
-	}
+//	public void OnEnable()
+//	{
+//		ElsaWife.OnCookIsReady += CookingIsReady;
+//		JesseOutlaw.OnRobBank += InRobBank;
+//	}
+//
+//	public void OnDisable()
+//	{
+//		ElsaWife.OnCookIsReady -= CookingIsReady;
+//		JesseOutlaw.OnRobBank -= InRobBank;
+//	}	
 
-	public void OnDisable()
-	{
-		ElsaWife.OnCookIsReady -= CookingIsReady;
-		JesseOutlaw.OnRobBank -= InRobBank;
-	}	
+//	public void CookingIsReady(){
+//		Debug.Log ("Elsa tells Bob: Dinner is fully cooked. Ready to eat...");
+//		Stew = 10;
+//		this.ChangeState (EatStewState.Instance);
+//	}
 
-	public void CookingIsReady(){
-		Debug.Log ("Elsa tells Bob: Dinner is fully cooked. Ready to eat...");
-		Stew = 10;
-		this.ChangeState (EatStewState.Instance);
-	}
-
-	public void InRobBank(){
-		Debug.Log ("Jesse send message: Going to rob bank......");
-		if (OnJesseRobBank != null) {
-			OnJesseRobBank ();
-		}
-	}
+//	public void InRobBank(){
+//		Debug.Log ("Jesse send message: Going to rob bank......");
+//		if (OnJesseRobBank != null) {
+//			OnJesseRobBank ();
+//		}
+//	}
 	// sensing
-	public override bool DetectsModality (Signal signal)
-	{
-		// only have sight.
-		// only worry about outlaw.
-		return signal.modality is SightModality && signal.sender is JesseOutlaw;
-	}
+//	public override bool DetectsModality (Signal signal)
+//	{
+//		// only have sight.
+//		// only worry about outlaw.
+//		return signal.modality is SightModality && signal.sender is JesseOutlaw;
+//	}
+//
+//	public override void Notify (Signal signal)
+//	{
+//		if (!targetPosition.Equals(Locations.BANK)) {
+//			Debug.Log ("Bob: I just saw Outlaw. I am going to bank to protect my gold.");
+//			ChangeLocation (Location.Bank);
+//		}
+//	}
 
-	public override void Notify (Signal signal)
-	{
-		if (!targetPosition.Equals(Locations.BANK)) {
-			Debug.Log ("Bob: I just saw Outlaw. I am going to bank to protect my gold.");
-			ChangeLocation (Location.Bank);
-		}
-	}
-
-	public override Vector3 Position ()
-	{
-		return transform.position;
-	}
+//	public override Vector3 Position ()
+//	{
+//		return transform.position;
+//	}
 }

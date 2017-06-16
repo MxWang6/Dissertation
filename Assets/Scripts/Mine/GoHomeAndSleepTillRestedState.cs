@@ -42,7 +42,7 @@ public class GoHomeAndSleepTillRested : State<BobMiner> {
 	}
 
 	public override void Exit(BobMiner m) {
-		//Debug.Log ("it is time to eat something.");
+		
 	}
 
 }
