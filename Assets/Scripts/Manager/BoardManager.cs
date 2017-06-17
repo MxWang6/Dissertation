@@ -26,10 +26,10 @@ public class BoardManager : MonoBehaviour {
 //	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
 
 	// add the location prefab here
-	public GameObject goldMine;
-	public GameObject shack;
-	public GameObject bank;
-	public GameObject saloon;
+//	public GameObject goldMine;
+//	public GameObject shack;
+//	public GameObject bank;
+//	public GameObject saloon;
 
 	public GameObject[] floorTiles;
 	public GameObject[] outerWallTiles; 
@@ -128,27 +128,27 @@ public class BoardManager : MonoBehaviour {
 
 		InitialiseList ();
 
-		Position position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(bank, position.toVector3(), Quaternion.identity);
-		Locations.BANK = position;
-		// if the location is placed on a tile marked as blocked. we need to mark as unblocked.
-		// otherwise our path finding can not reach it.
-		gridWorld.getTile (position).blocked = false;
-
-		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(shack, position.toVector3(), Quaternion.identity);
-		Locations.SHACK = position;
-		gridWorld.getTile (position).blocked = false;
-
-		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(goldMine, position.toVector3(), Quaternion.identity);
-		Locations.GOLDMINE = position;
-		gridWorld.getTile (position).blocked = false;
-
-		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
-		Instantiate(saloon, position.toVector3(), Quaternion.identity);
-		Locations.SALOON = position;
-		gridWorld.getTile (position).blocked = false;
+//		Position position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+//		Instantiate(bank, position.toVector3(), Quaternion.identity);
+//		Locations.BANK = position;
+//		// if the location is placed on a tile marked as blocked. we need to mark as unblocked.
+//		// otherwise our path finding can not reach it.
+//		gridWorld.getTile (position).blocked = false;
+//
+//		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+//		Instantiate(shack, position.toVector3(), Quaternion.identity);
+//		Locations.SHACK = position;
+//		gridWorld.getTile (position).blocked = false;
+//
+//		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+//		Instantiate(goldMine, position.toVector3(), Quaternion.identity);
+//		Locations.GOLDMINE = position;
+//		gridWorld.getTile (position).blocked = false;
+//
+//		position = new Position (Random.Range (0, columns), Random.Range (0, rows));
+//		Instantiate(saloon, position.toVector3(), Quaternion.identity);
+//		Locations.SALOON = position;
+//		gridWorld.getTile (position).blocked = false;
 
 		//int enemyCount = (int)Mathf.Log(level, 2f);
 		LayoutObjectAtRandom (monsterTiles,monsterCount,monsterCount);

@@ -11,6 +11,8 @@ public class Player : MonoBehaviour {
 	public Position currentPosition;
 	public Position targetPosition;
 
+	public Vector3 mousePoint;
+
 
 	private List<Node> path = new List<Node> ();
 
@@ -42,34 +44,31 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		clickMonse ();
+	}
 
-		if (Input.GetMouseButtonDown(0))
-		{
-			Debug.Log("Pressed left click.");
-//			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-//			RaycastHit hit;
-//			if (Physics.Raycast (ray, out hit))
-//			{
-//				pointsq = hit.point;
-//
-//				Debug.Log (pointsq);
-//			}
+	public void clickMonse(){
+		
+		if (Input.GetMouseButtonDown (0)) {
 
-//			float x = p.x;
-//			int y = (int)p.y;
-//			Debug.Log (y);
+			Debug.Log ("Pressed left click.");
+
+			mousePoint = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
 			Debug.Log (Input.mousePosition);
-			targetPosition = new Position(Input.mousePosition.x/100,Input.mousePosition.y/100);
-//			
+			Debug.Log (mousePoint);
+			targetPosition = new Position (mousePoint.x, mousePoint.y);
 
+			//start to find path
 			path.ForEach ((step) => step.tile.highlighted = false);
-			path.Clear();
-			path.AddRange(boardManager.getGridWorld().findPath(currentPosition, targetPosition));
+			path.Clear ();
+			path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
 			currentPosition = targetPosition;
-		//	location = newLocation;
+			//	location = newLocation;
 
 
 		}
 	}
+
+
 }
