@@ -29,12 +29,16 @@ public class Monster : MonoBehaviour {
 		Debug.Log ("monster"+ posi);
 		Debug.Log (boardManager.monsterPositions[0]); 
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
 
-
-
+		int x = Random.Range (-1, 1);
+		int y = Random.Range (-1, 1);
+		Position p = new Position (transform.position.x+x, transform.position.y + y);
+		float step = 0.5f * Time.deltaTime;
+		transform.position = Vector3.MoveTowards(transform.position, p.toVector3(), step);
 	}
 
 	public void setGridWorld(GridWorld gridWorld) {
@@ -45,33 +49,34 @@ public class Monster : MonoBehaviour {
 		this.monsterPosition = position;
 
 		float a = 1 / 9.0f;
+
 		// update its surrounding tiles in the grid world with monsterAtttackCost
 		Position mPosition = new Position (monsterPosition.x, monsterPosition.y);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x-1, monsterPosition.y-1);
-		gridWorld.getTile(mPosition).attackedProbability = a  * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a  * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x, monsterPosition.y-1);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x+1, monsterPosition.y-1);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x-1, monsterPosition.y);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x+1, monsterPosition.y);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x-1, monsterPosition.y+1);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x, monsterPosition.y+1);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 		mPosition = new Position (monsterPosition.x+1, monsterPosition.y+1);
-		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
 
 	}
 
@@ -83,56 +88,5 @@ public class Monster : MonoBehaviour {
 
 		return attackPower;
 	}
-
-
-	public void assignProbability(List<Vector3> monsterPositions){
-
-		int length = monsterPositions.Count;
-		for (int i = 0; i < length; i++) {
-
-			createProbability (1, monsterPositions [i]);
-
-		}
-
-	}
-
-	public void createProbability(int attackArrange, Vector3 mP){
-
-		if (attackArrange == 1) {
-
-			Position mPosition = new Position (mP.x, mP.y);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
 		
-			mPosition = new Position (mP.x-1, mP.y-1);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-			mPosition = new Position (mP.x, mP.y-1);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-			mPosition = new Position (mP.x+1, mP.y-1);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-			mPosition = new Position (mP.x-1, mP.y);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-			mPosition = new Position (mP.x+1, mP.y);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-			mPosition = new Position (mP.x-1, mP.y+1);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-			mPosition = new Position (mP.x, mP.y+1);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-			mPosition = new Position (mP.x+1, mP.y+1);
-			boardManager.getGridWorld().getTile(mPosition).attackedProbability = 0.9f * attackPower * ajustedFactor;
-
-		}
-	}
-
-	public float CalculateCost(){
-
-		this.monsterCost = attackPower * ajustedFactor;
-		return monsterCost;
-	}
 }

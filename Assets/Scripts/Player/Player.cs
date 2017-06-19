@@ -52,7 +52,6 @@ public class Player : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 
 			Debug.Log ("Pressed left click.");
-
 			mousePoint = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
 			Debug.Log (Input.mousePosition);
@@ -64,8 +63,6 @@ public class Player : MonoBehaviour {
 			path.Clear ();
 			path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
 			currentPosition = targetPosition;
-	
-
 
 		}
 	}
