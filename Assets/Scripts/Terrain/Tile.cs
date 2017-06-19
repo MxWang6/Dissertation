@@ -7,9 +7,14 @@ public class Tile : MonoBehaviour {
 	public bool blocked;
 	public Position position;
 	public bool highlighted;
+	public bool isMonsterArea;
+
+	public float attackedProbability;
+	public float monsterCost;
+
+	public float monsterAttackCost;
 
 	private SpriteRenderer spriteRenderer;
-
 
 	public void Start() {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -30,4 +35,12 @@ public class Tile : MonoBehaviour {
 	public Position getPosition() {
 		return position;
 	}
+
+	public float CalculateMonsterCost(){
+
+		return monsterCost;
+	}
+
+
 }
+

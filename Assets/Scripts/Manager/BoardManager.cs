@@ -43,6 +43,8 @@ public class BoardManager : MonoBehaviour {
 
 	private GridWorld gridWorld = new GridWorld(columns, rows);
 
+	public List <Vector3> monsterPositions = new List<Vector3> (); // A list of monster position
+
 	void InitialiseList()
 	{
 		
@@ -101,7 +103,7 @@ public class BoardManager : MonoBehaviour {
 
 
 	//LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
-	private void LayoutObjectAtRandom (GameObject[] tileArray, int minimum, int maximum)
+	private void LayoutMonsterAtRandom (GameObject[] tileArray, int minimum, int maximum)
 	{
 		
 		int objectCount = Random.Range (minimum, maximum+1);
@@ -109,8 +111,13 @@ public class BoardManager : MonoBehaviour {
 		for(int i = 0; i < objectCount; i++)
 		{
 			Vector3 randomPosition = RandomPosition();
+			monsterPositions.Add (randomPosition);
 			GameObject tileChoice = tileArray[Random.Range (0, tileArray.Length)];
 			Instantiate(tileChoice, randomPosition, Quaternion.identity);
+			Monster monster = tileChoice.GetComponent<Monster>();
+			monster.setGridWorld (gridWorld);
+			monster.setPosition (toPosition(randomPosition));
+
 		}
 	}
 
@@ -151,12 +158,18 @@ public class BoardManager : MonoBehaviour {
 //		gridWorld.getTile (position).blocked = false;
 
 		//int enemyCount = (int)Mathf.Log(level, 2f);
-		LayoutObjectAtRandom (monsterTiles,monsterCount,monsterCount);
+		LayoutMonsterAtRandom (monsterTiles,monsterCount,monsterCount);
 
 
 	}
 		
 	public GridWorld getGridWorld() {
 		return gridWorld;
+	}
+
+	public Position toPosition(Vector3 number){
+
+		Position p = new Position (number.x, number.y);
+		return p;
 	}
 }

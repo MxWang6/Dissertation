@@ -64,7 +64,7 @@ public class Player : MonoBehaviour {
 			path.Clear ();
 			path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
 			currentPosition = targetPosition;
-			//	location = newLocation;
+	
 
 
 		}

@@ -23,6 +23,7 @@ public class GridWorld
 		gridWorld [x, y] = tile;
 	}
 
+
 	public List<Node> findPath(Position currentPosition, Position targetPosition) {
 		Tile currentTile = gridWorld [currentPosition.x, currentPosition.y];
 		Tile targetTile = gridWorld [targetPosition.x, targetPosition.y];
@@ -98,11 +99,19 @@ public class GridWorld
 		int distanceY = Math.Abs (node1.tile.position.y - node2.tile.position.y);
 
 		if (distanceX > distanceY) {
-			return 14 * distanceY + 10 * (distanceX - distanceY);
+			return 14 * distanceY + 10 * (distanceX - distanceY) + (int)node2.tile.attackedProbability;
 		}
 
-		return 14 * distanceX + 10 * (distanceY - distanceX);
+		return 14 * distanceX + 10 * (distanceY - distanceX) + (int)node2.tile.attackedProbability;
 	}
+
+	private float GetMonsterCost(Node node) {
+
+		//node.tile.attackedProbability 
+
+		return node.tile.attackedProbability;
+	}
+
 
 	private List<Node> GetPath(Node startNode, Node endNode) {
 		List<Node> path = new List<Node> ();
