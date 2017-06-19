@@ -43,6 +43,36 @@ public class Monster : MonoBehaviour {
 
 	public void setPosition(Position position) {
 		this.monsterPosition = position;
+
+		float a = 1 / 9.0f;
+		// update its surrounding tiles in the grid world with monsterAtttackCost
+		Position mPosition = new Position (monsterPosition.x, monsterPosition.y);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x-1, monsterPosition.y-1);
+		gridWorld.getTile(mPosition).attackedProbability = a  * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x, monsterPosition.y-1);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x+1, monsterPosition.y-1);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x-1, monsterPosition.y);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x+1, monsterPosition.y);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x-1, monsterPosition.y+1);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x, monsterPosition.y+1);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
+		mPosition = new Position (monsterPosition.x+1, monsterPosition.y+1);
+		gridWorld.getTile(mPosition).attackedProbability = a * attackPower * ajustedFactor;
+
 	}
 
 	public Position getPosition() {

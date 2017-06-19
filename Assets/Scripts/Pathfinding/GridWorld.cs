@@ -99,10 +99,10 @@ public class GridWorld
 		int distanceY = Math.Abs (node1.tile.position.y - node2.tile.position.y);
 
 		if (distanceX > distanceY) {
-			return 14 * distanceY + 10 * (distanceX - distanceY) + (int)node2.tile.attackedProbability;
+			return 14 * distanceY + 10 * (distanceX - distanceY) + (int)node2.tile.attackedProbability * 10;
 		}
 
-		return 14 * distanceX + 10 * (distanceY - distanceX) + (int)node2.tile.attackedProbability;
+		return 14 * distanceX + 10 * (distanceY - distanceX) + (int)node2.tile.attackedProbability * 10;
 	}
 
 	private float GetMonsterCost(Node node) {
