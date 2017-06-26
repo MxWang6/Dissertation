@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour {
 	public bool blocked;
 	public Position position;
 	public bool highlighted;
+	public bool highlightedM;
 	public bool isMonsterArea;
 
 	public float attackedProbability;
@@ -23,7 +24,9 @@ public class Tile : MonoBehaviour {
 	public void Update() {
 		if (highlighted) {
 			spriteRenderer.color = new Color (27, 0, 198);
-		} else {
+		} else if (highlightedM)
+			spriteRenderer.color = new Color (0, 150, 130);
+		else {
 			spriteRenderer.color = new Color (255, 255, 255);
 		}
 	}

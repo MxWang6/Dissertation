@@ -41,6 +41,8 @@ public class BoardManager : MonoBehaviour {
 
 	public List <Vector3> monsterPositions = new List<Vector3> (); // A list of monster position
 
+	public Position app;
+
 	void InitialiseList()
 	{
 		
@@ -113,6 +115,7 @@ public class BoardManager : MonoBehaviour {
 			Monster monster = tileChoice.GetComponent<Monster>();
 			monster.setGridWorld (gridWorld);
 			monster.setPosition (toPosition(randomPosition));
+			app = monster.setMovingArea (toPosition(randomPosition));
 
 		}
 	}
