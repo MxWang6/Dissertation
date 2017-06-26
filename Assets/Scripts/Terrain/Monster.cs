@@ -9,21 +9,18 @@ public class Monster : MonoBehaviour {
 
 	public float attackPower;
 	public float [][] attackArea;
-	public int movingAreaX;
-	public int movingAreaY;
 
 	public float attackProbability = 0;
 	public float monsterCost;
 
-	public int movingX;
-	public int movingY;
-
 	public int ajustedFactor;
-
-//	public Tile monsterTile;
 
 	public GridWorld gridWorld;
 
+	public int movingAreaWidth;
+	public int movingAreaHeight;
+
+	private MovingArea movingArea;
 
 	// Use this for initialization
 	void Start () {
@@ -32,27 +29,11 @@ public class Monster : MonoBehaviour {
 		Vector3 posi = transform.position;
 		Debug.Log ("monster"+ posi);
 		Debug.Log (boardManager.monsterPositions[0]); 
+		Time.fixedDeltaTime = 0.5f;
 	}
 
-//	public void FixedUpdate(){
-//
-//		Position p = new Position (movingX,movingY);
-//		//float step = 0.5f * Time.deltaTime;
-//		transform.position = p.toVector3();
-//		//		transform.position = Vector3.MoveTowards(transform.position, p.toVector3(), step);
-//
-//	}
-
-	// Update is called once per frame
-	void Update () {
-
-//		if (boardManager.app != null){
-			Position p = boardManager.app;
-		    float step = 0.5f * Time.deltaTime;
-		    transform.position = Vector3.MoveTowards(transform.position, p.toVector3(), step);
-     		setMovingArea(this.toPosition(transform.position));
-//		}
-
+	public void FixedUpdate(){
+		transform.position = movingArea.getNextRandomPosition(transform.position);
 	}
 
 	public void setGridWorld(GridWorld gridWorld) {
@@ -61,7 +42,7 @@ public class Monster : MonoBehaviour {
 
 	public void setPosition(Position position) {
 		this.monsterPosition = position;
-
+		this.movingArea = new MovingArea(position , movingAreaWidth, movingAreaHeight);
 		float a = 1 / 9.0f;
 
 		// update its surrounding tiles in the grid world with monsterAtttackCost
@@ -102,45 +83,6 @@ public class Monster : MonoBehaviour {
 
 		return attackPower;
 	}
-
-	public Position setMovingArea(Position position){
-
-
-		// left up point 
-		int mapAreaLeftUpX = position.x - movingAreaX + 2;
-		int mapAreaLeftUpY = position.y - movingAreaY + 2;
-
-		// right up point
-		int mapAreaRightUpX = position.x + movingAreaX - 2;
-		int mapAreaRightUpY = position.y - movingAreaY + 2;
-
-		// left down point
-		int mapAreaLeftDownX = position.x - movingAreaX + 2;
-		int mapAreaLeftDownY = position.y + movingAreaY - 2;
-
-		// right down point 
-		int mapAreaRightDownX = position.x + movingAreaX - 2;
-		int mapAreaRightDownY = position.y + movingAreaY - 2;
-
-//		int movingX;
-//		int movingY;
-
-		movingX = Random.Range (mapAreaLeftUpX, mapAreaRightUpX);
-		movingY = Random.Range (mapAreaLeftUpY, mapAreaLeftDownY);
-
-		 //Vector3.MoveTowards(transform.position, p.toVector3(), step);
-//
-		Position p = new Position (movingX,movingY);
-//
-		setHighted(mapAreaLeftUpX,mapAreaRightUpX,mapAreaLeftUpY,mapAreaLeftDownY);
-		gridWorld.getTile(p).highlighted = true;
-//		float step = 0.5f * Time.deltaTime;
-	//	transform.position = p.toVector3();
-//		transform.position = Vector3.MoveTowards(transform.position, p.toVector3(), step);
-
-		return p;
-	}
-		
 
 	public Position toPosition(Vector3 number){
 
