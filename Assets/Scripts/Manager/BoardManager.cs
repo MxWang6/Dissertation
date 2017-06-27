@@ -111,11 +111,12 @@ public class BoardManager : MonoBehaviour {
 			Vector3 randomPosition = RandomPosition();
 			monsterPositions.Add (randomPosition);
 			GameObject tileChoice = tileArray[Random.Range (0, tileArray.Length)];
-			Instantiate(tileChoice, randomPosition, Quaternion.identity);
-			Monster monster = tileChoice.GetComponent<Monster>();
+			// TODO: why we need a clone here.
+			GameObject tileChoiceClone = Instantiate(tileChoice, randomPosition, Quaternion.identity);
+			Monster monster = tileChoiceClone.GetComponent<Monster>();
 			monster.setGridWorld (gridWorld);
 			monster.setPosition (toPosition(randomPosition));
-			app = monster.setMovingArea (toPosition(randomPosition));
+			//app = monster.setMovingArea (MovingArea);
 
 		}
 	}
