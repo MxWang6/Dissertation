@@ -33,7 +33,17 @@ public class Monster : MonoBehaviour {
 	}
 
 	public void FixedUpdate(){
-		transform.position = movingArea.getNextRandomPosition(transform.position);
+
+		Vector2 mA = movingArea.getNextRandomPosition(transform.position);
+		while (gridWorld.getTile (toPosition2(mA)).blocked) {
+
+			mA = movingArea.getNextRandomPosition(transform.position);
+		}
+
+		transform.position = mA;
+		updateCostOfTile (toPosition2 (mA));
+		//setPosition (toPosition2(mA));
+        //transform.position = movingArea.getNextRandomPosition(transform.position);
 	}
 
 	public void setGridWorld(GridWorld gridWorld) {
@@ -43,35 +53,53 @@ public class Monster : MonoBehaviour {
 	public void setPosition(Position position) {
 		this.monsterPosition = position;
 		this.movingArea = new MovingArea(position , movingAreaWidth, movingAreaHeight);
+
+		// initial its surrounding tiles in the grid world with monsterAtttackCost
+		this.updateCostOfTile (monsterPosition);
+
+
+	}
+
+	// update its surrounding tiles in the grid world with monsterAtttackCost
+	public void updateCostOfTile(Position position){
+
 		float a = 1 / 9.0f;
 
-		// update its surrounding tiles in the grid world with monsterAtttackCost
-		Position mPosition = new Position (monsterPosition.x, monsterPosition.y);
+		Position mPosition = new Position (position.x, position.y);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x-1, monsterPosition.y-1);
+		mPosition = new Position (position.x-1, position.y-1);
 		gridWorld.getTile(mPosition).monsterCost = a  * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x, monsterPosition.y-1);
+		mPosition = new Position (position.x, position.y-1);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x+1, monsterPosition.y-1);
+		mPosition = new Position (position.x+1, position.y-1);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x-1, monsterPosition.y);
+		mPosition = new Position (position.x-1, position.y);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x+1, monsterPosition.y);
+		mPosition = new Position (position.x+1, position.y);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x-1, monsterPosition.y+1);
+		mPosition = new Position (position.x-1, position.y+1);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x, monsterPosition.y+1);
+		mPosition = new Position (position.x, position.y+1);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
-		mPosition = new Position (monsterPosition.x+1, monsterPosition.y+1);
+		mPosition = new Position (position.x+1, position.y+1);
 		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
+		gridWorld.getTile (mPosition).highlightedM = true;
 
 	}
 
@@ -85,6 +113,12 @@ public class Monster : MonoBehaviour {
 	}
 
 	public Position toPosition(Vector3 number){
+
+		Position p = new Position (number.x, number.y);
+		return p;
+	}
+
+	public Position toPosition2(Vector2 number){
 
 		Position p = new Position (number.x, number.y);
 		return p;

@@ -8,12 +8,20 @@ public class MovingArea
 	private int width;
 	private int height;
 
+	public GridWorld gridWorld;
+
+
+
 	public MovingArea (Position origin, int width, int height)
 	{
 		this.x = origin.x - width/2;
 		this.y = origin.y - height/2;
 		this.width = width;
 		this.height = height;
+	}
+
+	public void setGridWorld(GridWorld gridWorld) {
+		this.gridWorld = gridWorld;
 	}
 
 	public Vector2 getNextRandomPosition(Vector2 currentPos) {
@@ -38,6 +46,9 @@ public class MovingArea
 
 		nextPosition.x = currentPos.x + offsetX;
 		nextPosition.y = currentPos.y + offsetY;
+
+	//	Position mPosition = new Position (nextPosition.x, nextPosition.y);
+
 
 		// We only return the new position if it is in the range of the moving area.
 		if (this.x <= nextPosition.x &&  nextPosition.x <= this.x + width && this.y <= nextPosition.y && nextPosition.y <= this.y + height) {
