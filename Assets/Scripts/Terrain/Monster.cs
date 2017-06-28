@@ -34,72 +34,63 @@ public class Monster : MonoBehaviour {
 
 	public void FixedUpdate(){
 
+		toggleCostOfTile (toPosition2 (transform.position), false);
 		Vector2 mA = movingArea.getNextRandomPosition(transform.position);
-		while (gridWorld.getTile (toPosition2(mA)).blocked) {
-
-			mA = movingArea.getNextRandomPosition(transform.position);
-		}
-
 		transform.position = mA;
-		updateCostOfTile (toPosition2 (mA));
+		toggleCostOfTile (toPosition2 (mA), true);
 		//setPosition (toPosition2(mA));
         //transform.position = movingArea.getNextRandomPosition(transform.position);
 	}
 
-	public void setGridWorld(GridWorld gridWorld) {
+	public void setPosition(GridWorld gridWorld, Position position) {
 		this.gridWorld = gridWorld;
-	}
-
-	public void setPosition(Position position) {
 		this.monsterPosition = position;
-		this.movingArea = new MovingArea(position , movingAreaWidth, movingAreaHeight);
+		this.movingArea = new MovingArea(gridWorld, position , movingAreaWidth, movingAreaHeight);
 
 		// initial its surrounding tiles in the grid world with monsterAtttackCost
-		this.updateCostOfTile (monsterPosition);
-
-
+		this.toggleCostOfTile (monsterPosition, true);
 	}
 
 	// update its surrounding tiles in the grid world with monsterAtttackCost
-	public void updateCostOfTile(Position position){
+	public void toggleCostOfTile(Position position, bool turnedOn){
 
 		float a = 1 / 9.0f;
 
 		Position mPosition = new Position (position.x, position.y);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x-1, position.y-1);
-		gridWorld.getTile(mPosition).monsterCost = a  * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x, position.y-1);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x+1, position.y-1);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x-1, position.y);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x+1, position.y);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x-1, position.y+1);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x, position.y+1);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		mPosition = new Position (position.x+1, position.y+1);
-		gridWorld.getTile(mPosition).monsterCost = a * attackPower * ajustedFactor;
-		gridWorld.getTile (mPosition).highlightedM = true;
+		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 	}
 

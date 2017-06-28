@@ -121,8 +121,7 @@ public class BoardManager : MonoBehaviour {
 
 			GameObject tileChoiceClone = Instantiate (tileChoice, randomPosition, Quaternion.identity);
 			Monster monster = tileChoiceClone.GetComponent<Monster> ();
-			monster.setGridWorld (gridWorld);
-			monster.setPosition (toPosition (randomPosition));
+			monster.setPosition (gridWorld, toPosition (randomPosition));
 
 			//app = monster.setMovingArea (MovingArea);
 //			MovingArea movingArea;
