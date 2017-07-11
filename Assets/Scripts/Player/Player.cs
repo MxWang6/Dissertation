@@ -26,6 +26,7 @@ public class Player : MonoBehaviour {
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 
 		currentPosition = new Position (transform.position.x, transform.position.y);
+		targetPosition = new Position (0,0);
 
 		Debug.Log(currentPosition);
 		Time.fixedDeltaTime = 0.5f;

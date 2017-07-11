@@ -8,9 +8,10 @@ public class Monster : MonoBehaviour {
 	public Position monsterPosition;
 
 	public float attackPower;
-	public float [][] attackArea;
+//	public float [][] attackArea;
 
 	public float attackProbability = 0;
+	public int attackProbabilityArea;
 	public float monsterCost;
 
 	public int ajustedFactor;
@@ -56,43 +57,139 @@ public class Monster : MonoBehaviour {
 
 		float a = 1 / 9.0f;
 
+		for (int i = 1; i< attackProbabilityArea + 1; i++)
+		{
+
+			setProbabilityArea (position, turnedOn, i, a);
+
+		}
+
+//		if (attackProbabilityArea == 1) {
+//			setProbabilityArea (position, turnedOn, attackProbabilityArea, a);
+//		}else if (attackProbabilityArea == 2){
+//
+//			setProbabilityArea (position, turnedOn, attackProbabilityArea-1, a);
+//			setProbabilityArea (position, turnedOn, attackProbabilityArea, a);
+//		}
+//		Position mPosition = new Position (position.x, position.y);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x-1, position.y-1);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x, position.y-1);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x+1, position.y-1);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x-1, position.y);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x+1, position.y);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x-1, position.y+1);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x, position.y+1);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+//
+//		mPosition = new Position (position.x+1, position.y+1);
+//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+	}
+
+	public void setProbabilityArea(Position position, bool turnedOn, int circle, float a)
+	{
+		
 		Position mPosition = new Position (position.x, position.y);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x-1, position.y-1);
+		// the first row
+		mPosition = new Position (position.x - circle, position.y - circle);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x, position.y-1);
+		mPosition = new Position (position.x, position.y - circle);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x+1, position.y-1);
+		mPosition = new Position (position.x + circle, position.y - circle);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x-1, position.y);
+		// the second row
+		mPosition = new Position (position.x - circle, position.y);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x+1, position.y);
+		mPosition = new Position (position.x + circle, position.y);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x-1, position.y+1);
+		// the third row
+		mPosition = new Position (position.x - circle, position.y + circle);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x, position.y+1);
+		mPosition = new Position (position.x, position.y + circle);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-		mPosition = new Position (position.x+1, position.y+1);
+		mPosition = new Position (position.x + circle, position.y + circle);
 		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 		gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+		if (circle == 2) {
+			
+			mPosition = new Position (position.x - circle + 1, position.y - circle);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+			mPosition = new Position (position.x + circle -1, position.y - circle);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+			mPosition = new Position (position.x - circle, position.y - circle + 1);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+			mPosition = new Position (position.x + circle, position.y - circle + 1);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+			mPosition = new Position (position.x - circle, position.y + circle - 1);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+			mPosition = new Position (position.x + circle, position.y + circle - 1);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+			mPosition = new Position (position.x - circle + 1, position.y + circle);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+			mPosition = new Position (position.x + circle -1, position.y + circle);
+			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
+			gridWorld.getTile (mPosition).highlightedM = turnedOn;
+
+
+		}
 
 	}
+
 
 	public Position getPosition() {
 		return monsterPosition;
