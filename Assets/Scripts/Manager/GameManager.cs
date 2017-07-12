@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void InitGame(){
+		NotificationSystem.start ();
 		boardScript.SetupScene (level);
 	}
 	// Update is called once per frame

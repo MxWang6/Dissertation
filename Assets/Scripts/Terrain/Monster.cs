@@ -37,6 +37,10 @@ public class Monster : MonoBehaviour {
 
 		toggleCostOfTile (toPosition2 (transform.position), false);
 		Vector2 mA = movingArea.getNextRandomPosition(transform.position);
+		if (transform.position.x != mA.x || transform.position.y != mA.y) {
+			//notify the player through notification system.
+			NotificationSystem.publish (new MonsterMoveEvent (this, toPosition2 (transform.position), toPosition2 (mA)));
+		}
 		transform.position = mA;
 		toggleCostOfTile (toPosition2 (mA), true);
 		//setPosition (toPosition2(mA));
@@ -47,6 +51,7 @@ public class Monster : MonoBehaviour {
 		this.gridWorld = gridWorld;
 		this.monsterPosition = position;
 		this.movingArea = new MovingArea(gridWorld, position , movingAreaWidth, movingAreaHeight);
+	//	gridWorld.getTile (movingArea)
 
 		// initial its surrounding tiles in the grid world with monsterAtttackCost
 		this.toggleCostOfTile (monsterPosition, true);
@@ -55,7 +60,9 @@ public class Monster : MonoBehaviour {
 	// update its surrounding tiles in the grid world with monsterAtttackCost
 	public void toggleCostOfTile(Position position, bool turnedOn){
 
-		float a = 1 / 9.0f;
+		//float attackArea = attackProbabilityArea * 2 + 1;
+
+		float a = 1 / (attackProbabilityArea * 2.0f + 1.0f);
 
 		for (int i = 1; i< attackProbabilityArea + 1; i++)
 		{
@@ -143,9 +150,7 @@ public class Monster : MonoBehaviour {
 			gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
 		}
-
-
-
+			
 	}
 
 

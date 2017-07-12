@@ -30,22 +30,18 @@ public class Player : MonoBehaviour {
 
 		Debug.Log(currentPosition);
 		Time.fixedDeltaTime = 0.5f;
+		NotificationSystem.subscribe (this);
 	}
 
 	public void FixedUpdate() {
-		if (targetPosition != currentPosition) {
-			//start to find path
-			path.ForEach ((step) => step.tile.highlighted = false);
-			path.Clear ();
-			path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
-		}
-
-		if (path.Count > 0) {
-			Tile nextTile = path [0].tile;
-			path.RemoveAt (0);
-			currentPosition = nextTile.getPosition ();
-			transform.position = currentPosition.toVector3 ();
-			nextTile.highlighted = false;
+		lock (path) {
+			if (path.Count > 0) {
+				Tile nextTile = path [0].tile;
+				path.RemoveAt (0);
+				currentPosition = nextTile.getPosition ();
+				transform.position = currentPosition.toVector3 ();
+				nextTile.highlighted = false;
+			}
 		}
 	}
 
@@ -65,8 +61,25 @@ public class Player : MonoBehaviour {
 			Debug.Log (Input.mousePosition);
 			Debug.Log (mousePoint);
 			targetPosition = new Position (mousePoint.x, mousePoint.y);
+
+			lock (path) {
+				//start to find path
+				path.ForEach ((step) => step.tile.highlighted = false);
+				path.Clear ();
+				path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
+			}
 		}
 	}
 
-
+	public void monsterMoved(MonsterMoveEvent moveEvent) {
+		if (targetPosition != currentPosition) {
+			// thread safe.
+			lock (path) {
+				//start to find path
+				path.ForEach ((step) => step.tile.highlighted = false);
+				path.Clear ();
+				path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
+			}
+		}
+	}
 }

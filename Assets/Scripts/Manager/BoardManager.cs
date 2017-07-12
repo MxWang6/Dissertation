@@ -96,6 +96,7 @@ public class BoardManager : MonoBehaviour {
 		int randomIndex = Random.Range (0, gridPositions.Count);
 		Vector3 randomPosition = gridPositions[randomIndex];
 
+		//limit the range of randomPosition
 		while (randomPosition.x < 4 || randomPosition.x > (columns - 6) || randomPosition.y < 4 || randomPosition.y > (rows - 6)) {
 			
 			randomPosition = gridPositions[Random.Range (0, gridPositions.Count)];
