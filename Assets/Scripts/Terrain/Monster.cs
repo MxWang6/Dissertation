@@ -63,50 +63,7 @@ public class Monster : MonoBehaviour {
 			setProbabilityArea (position, turnedOn, i, a);
 
 		}
-
-//		if (attackProbabilityArea == 1) {
-//			setProbabilityArea (position, turnedOn, attackProbabilityArea, a);
-//		}else if (attackProbabilityArea == 2){
-//
-//			setProbabilityArea (position, turnedOn, attackProbabilityArea-1, a);
-//			setProbabilityArea (position, turnedOn, attackProbabilityArea, a);
-//		}
-//		Position mPosition = new Position (position.x, position.y);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x-1, position.y-1);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x, position.y-1);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x+1, position.y-1);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x-1, position.y);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x+1, position.y);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x-1, position.y+1);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x, position.y+1);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-//
-//		mPosition = new Position (position.x+1, position.y+1);
-//		gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
-//		gridWorld.getTile (mPosition).highlightedM = turnedOn;
-
+			
 	}
 
 	public void setProbabilityArea(Position position, bool turnedOn, int circle, float a)
@@ -185,8 +142,9 @@ public class Monster : MonoBehaviour {
 			gridWorld.getTile(mPosition).monsterCost = turnedOn ? a * attackPower * ajustedFactor : 0;
 			gridWorld.getTile (mPosition).highlightedM = turnedOn;
 
-
 		}
+
+
 
 	}
 

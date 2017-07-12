@@ -20,8 +20,8 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 		
-	private const int columns = 60;                                         //Number of columns in our game board.
-	private const int rows = 27;                                            //Number of rows in our game board.
+	private const int columns = 80;                                         //Number of columns in our game board.
+	private const int rows = 37;                                            //Number of rows in our game board.
 //	public Count wallCount = new Count (5, 9);                      //Lower and upper limit for our random number of walls per level.
 //	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
 
@@ -95,6 +95,12 @@ public class BoardManager : MonoBehaviour {
 		
 		int randomIndex = Random.Range (0, gridPositions.Count);
 		Vector3 randomPosition = gridPositions[randomIndex];
+
+		while (randomPosition.x < 4 || randomPosition.x > (columns - 6) || randomPosition.y < 4 || randomPosition.y > (rows - 6)) {
+			
+			randomPosition = gridPositions[Random.Range (0, gridPositions.Count)];
+		}
+
 		gridPositions.RemoveAt (randomIndex);
 		return randomPosition;
 	}
@@ -151,4 +157,6 @@ public class BoardManager : MonoBehaviour {
 		Position p = new Position (number.x, number.y);
 		return p;
 	}
+
+
 }
