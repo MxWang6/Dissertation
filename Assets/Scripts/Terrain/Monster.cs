@@ -8,7 +8,6 @@ public class Monster : MonoBehaviour {
 	public Position monsterPosition;
 
 	public float attackPower;
-//	public float [][] attackArea;
 
 	public float attackProbability = 0;
 	public int attackProbabilityArea;
@@ -51,7 +50,7 @@ public class Monster : MonoBehaviour {
 		this.gridWorld = gridWorld;
 		this.monsterPosition = position;
 		this.movingArea = new MovingArea(gridWorld, position , movingAreaWidth, movingAreaHeight);
-	//	gridWorld.getTile (movingArea)
+	
 
 		// initial its surrounding tiles in the grid world with monsterAtttackCost
 		this.toggleCostOfTile (monsterPosition, true);

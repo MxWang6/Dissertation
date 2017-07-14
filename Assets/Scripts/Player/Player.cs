@@ -13,6 +13,8 @@ public class Player : MonoBehaviour {
 
 	public Vector3 mousePoint;
 
+	public Animator animator;
+
 
 	private List<Node> path = new List<Node> ();
 
@@ -23,6 +25,10 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	public void Start () {
 
+		//Get a component reference to the player's animator component
+		animator = GetComponent<Animator>();
+
+		//Get a component reference to the gameobject's gameManger component
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
 
 		currentPosition = new Position (transform.position.x, transform.position.y);
@@ -36,12 +42,27 @@ public class Player : MonoBehaviour {
 	public void FixedUpdate() {
 		lock (path) {
 			if (path.Count > 0) {
+				
 				Tile nextTile = path [0].tile;
 				path.RemoveAt (0);
 				currentPosition = nextTile.getPosition ();
 				transform.position = currentPosition.toVector3 ();
 				nextTile.highlighted = false;
-			}
+
+				// animation of player
+				if (targetPosition.x > currentPosition.x) {
+					animator.SetTrigger ("PlayerRight");
+				} else if (targetPosition.x < currentPosition.x) {
+					animator.SetTrigger ("PlayerLeft");
+				} else if (targetPosition.x == currentPosition.x && targetPosition.y < currentPosition.y) {
+					animator.SetTrigger ("PlayerIdle");
+				} else if (targetPosition.x == currentPosition.x && targetPosition.y > currentPosition.y) {
+					animator.SetTrigger ("PlayerBack");
+				}
+			} 
+//			else {
+//				animator.SetTrigger ("Playerldle");
+//			}
 		}
 	}
 
@@ -59,7 +80,7 @@ public class Player : MonoBehaviour {
 			mousePoint = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
 			Debug.Log (Input.mousePosition);
-			Debug.Log (mousePoint);
+			Debug.Log ("target position" + mousePoint);
 			targetPosition = new Position (mousePoint.x, mousePoint.y);
 
 			lock (path) {
