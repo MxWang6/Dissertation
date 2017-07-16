@@ -60,9 +60,7 @@ public class Player : MonoBehaviour {
 					animator.SetTrigger ("PlayerBack");
 				}
 			} 
-//			else {
-//				animator.SetTrigger ("Playerldle");
-//			}
+
 		}
 	}
 

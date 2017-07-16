@@ -20,8 +20,8 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 		
-	private const int columns = 80;                                         //Number of columns in our game board.
-	private const int rows = 37;                                            //Number of rows in our game board.
+	private const int columns = 60;   //(80,37)                                      //Number of columns in our game board.
+	private const int rows = 27;                                            //Number of rows in our game board.
 //	public Count wallCount = new Count (5, 9);                      //Lower and upper limit for our random number of walls per level.
 //	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
 
