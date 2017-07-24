@@ -40,27 +40,30 @@ public class Player : MonoBehaviour {
 	}
 
 	public void FixedUpdate() {
-		lock (path) {
-			if (path.Count > 0) {
-				
-				Tile nextTile = path [0].tile;
-				path.RemoveAt (0);
-				currentPosition = nextTile.getPosition ();
-				transform.position = currentPosition.toVector3 ();
-				nextTile.highlighted = false;
+		if (targetPosition != currentPosition) {
+			//start to find path
+			path.ForEach ((step) => step.tile.highlighted = false);
+			path.Clear ();
+			path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
+		}
 
-				// animation of player
-				if (targetPosition.x > currentPosition.x) {
-					animator.SetTrigger ("PlayerRight");
-				} else if (targetPosition.x < currentPosition.x) {
-					animator.SetTrigger ("PlayerLeft");
-				} else if (targetPosition.x == currentPosition.x && targetPosition.y < currentPosition.y) {
-					animator.SetTrigger ("PlayerIdle");
-				} else if (targetPosition.x == currentPosition.x && targetPosition.y > currentPosition.y) {
-					animator.SetTrigger ("PlayerBack");
-				}
-			} 
+		if (path.Count > 0) {
+			Tile nextTile = path [0].tile;
+			path.RemoveAt (0);
+			currentPosition = nextTile.getPosition ();
+			transform.position = currentPosition.toVector3 ();
+			nextTile.highlighted = false;
 
+			// animation of player
+			if (targetPosition.x > currentPosition.x) {
+				animator.SetTrigger ("PlayerRight");
+			} else if (targetPosition.x < currentPosition.x) {
+				animator.SetTrigger ("PlayerLeft");
+			} else if (targetPosition.x == currentPosition.x && targetPosition.y < currentPosition.y) {
+				animator.SetTrigger ("PlayerIdle");
+			} else if (targetPosition.x == currentPosition.x && targetPosition.y > currentPosition.y) {
+				animator.SetTrigger ("PlayerBack");
+			}
 		}
 	}
 
@@ -91,14 +94,5 @@ public class Player : MonoBehaviour {
 	}
 
 	public void monsterMoved(MonsterMoveEvent moveEvent) {
-		if (targetPosition != currentPosition) {
-			// thread safe.
-			lock (path) {
-				//start to find path
-				path.ForEach ((step) => step.tile.highlighted = false);
-				path.Clear ();
-				path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
-			}
-		}
 	}
 }
