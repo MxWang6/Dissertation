@@ -91,7 +91,7 @@ public class Player : MonoBehaviour {
 	}
 
 	public void monsterMoved(MonsterMoveEvent moveEvent) {
-		if (targetPosition != currentPosition) {
+		if (targetPosition != currentPosition && canMonsterAttackPath()) {
 			// thread safe.
 			lock (path) {
 				//start to find path
@@ -100,5 +100,15 @@ public class Player : MonoBehaviour {
 				path.AddRange (boardManager.getGridWorld ().findPath (currentPosition, targetPosition));
 			}
 		}
+	}
+
+	private bool canMonsterAttackPath() {
+		foreach (Node step in path) {
+			if (step.tile.monsterCost != 0) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
