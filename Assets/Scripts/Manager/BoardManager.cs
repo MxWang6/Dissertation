@@ -20,8 +20,8 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 		
-	private const int columns = 60;   //(80,37)                                      //Number of columns in our game board.
-	private const int rows = 27;                                            //Number of rows in our game board.
+	private const int columns = 40;   //(80,37) (40,20)                                  //Number of columns in our game board.
+	private const int rows = 20;                                            //Number of rows in our game board.
 //	public Count wallCount = new Count (5, 9);                      //Lower and upper limit for our random number of walls per level.
 //	public Count foodCount = new Count (1, 5);                      //Lower and upper limit for our random number of food items per level.
 
@@ -29,6 +29,9 @@ public class BoardManager : MonoBehaviour {
 
 	public GameObject[] floorTiles;
 	public GameObject[] outerWallTiles; 
+	public GameObject[] obstacleTiles;
+	public GameObject[] backgroundTiles;
+	public GameObject[] itemTiles;
 
 	// add the Monster prefab here
 	public GameObject[] monsterTiles;
@@ -41,7 +44,7 @@ public class BoardManager : MonoBehaviour {
 
 	public List <Vector3> monsterPositions = new List<Vector3> (); // A list of monster position
 
-
+	public int t;
 
 	void InitialiseList()
 	{
@@ -75,10 +78,57 @@ public class BoardManager : MonoBehaviour {
 				if (x == -1 || x == columns || y == -1 || y == rows) {
 					GameObject toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length)];
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
-				} else {
+				} else if ( x == 30 && y == 15|| x == 31 && y == 15 || x == 30 && y == 14 || x == 31 && y == 14
+					|| x == 11 && y == 12|| x == 12 && y == 12 || x == 11 && y == 11 || x == 12 && y == 11){
+
+
+					if (x == 30 && y == 15|| x == 11 && y == 12 ) {
+						t = 0;
+					} else if (x == 31 && y == 15|| x == 12 && y == 12) {
+						t = 1;
+					} else if (x == 30 && y == 14|| x == 11 && y == 11) {
+						t = 2;
+					} else if (x == 31 && y == 14|| x == 12 && y == 11) {
+						t = 3;
+					}
+					
+					GameObject toInstantiate = backgroundTiles[t];
+					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
+					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
+
+					Tile tileSprite = instance.GetComponent<Tile> ();
+					tileSprite.setPosition (position);
+					gridWorld.addTile (x, y, tileSprite);
+
+				}else if (assignObstacle(x,y)){
+
+
+					GameObject toInstantiate = obstacleTiles[Random.Range (0, obstacleTiles.Length)];
+					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
+					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
+
+					Tile tileSprite = instance.GetComponent<Tile> ();
+					tileSprite.setPosition (position);
+					gridWorld.addTile (x, y, tileSprite);
+
+				}else if (assignItem(x,y)){
+
+
+					GameObject toInstantiate = itemTiles[Random.Range (0, itemTiles.Length)];
+					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
+					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
+
+					Tile tileSprite = instance.GetComponent<Tile> ();
+					tileSprite.setPosition (position);
+					gridWorld.addTile (x, y, tileSprite);
+
+				}
+				else{
+
 					GameObject toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)];
 					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
+
 					Tile tileSprite = instance.GetComponent<Tile> ();
 					tileSprite.setPosition (position);
 					gridWorld.addTile (x, y, tileSprite);
@@ -159,5 +209,30 @@ public class BoardManager : MonoBehaviour {
 		return p;
 	}
 
+
+	public bool assignObstacle(int x, int y){
+
+		if (x == 2 && y == 2 || x == 3 && y == 1 || x == 6 && y == 2 || x == 7 && y == 2 || x == 8 && y == 1 || x == 14 && y == 2 || x == 18 && y == 2|| x == 22 && y == 1 || x == 23 && y == 1 || x == 30 && y == 2 || x == 32 && y == 2 || x == 36 && y == 1 || x == 37 && y == 0
+			|| x == 3 && y == 3 || x == 4 && y == 3 || x == 7 && y == 0 || x == 8 && y == 0 || x == 15 && y == 3 || x == 17 && y == 3|| x == 23 && y == 3 || x == 24 && y == 3 || x == 31 && y == 3 || x == 32 && y == 3 || x == 38 && y == 3 || x == 37 && y == 3
+		    || x == 16 && y == 4 || x == 25 && y == 4 || x == 25 && y == 5 || x == 11 && y == 5 || x == 29 && y == 5 || x == 18 && y == 5||x == 10 && y == 6 || x == 11 && y == 6 || x == 20 && y == 6 || x == 21 && y == 6
+			|| x == 0 && y == 7 || x == 10 && y == 7 || x == 12 && y == 7 || x == 16 && y == 7 || x == 17 && y == 7|| x == 21 && y == 7 || x == 25 && y == 7 || x == 26 && y == 7 || x == 27 && y == 7 || x == 33 && y == 7 || x == 34 && y == 7
+			||x == 2 && y == 8 || x == 3 && y == 8 || x == 8 && y == 9 || x == 14 && y == 9 || x == 18 && y == 9|| x == 30 && y == 9 || x == 32 && y == 10 || x == 39 && y == 9 || x == 38 && y == 9
+			||x == 1 && y == 10 || x == 3 && y == 10 || x == 6 && y == 10 || x == 7 && y == 10 || x == 8 && y == 10 || x == 15 && y == 10 || x == 16 && y == 11|| x == 20 && y == 11 || x == 21 && y == 11 || x == 30 && y == 12 || x == 32 && y == 11 || x == 37 && y == 11 || x == 37 && y == 12
+			||x == 2 && y == 13 || x == 3 && y == 13 || x == 6 && y == 13 || x == 6 && y == 12 || x == 9 && y == 13 || x == 14 && y == 13 || x == 18 && y == 13|| x == 25 && y == 14 || x == 26 && y == 14 || x == 30 && y == 14 || x == 35 && y == 14
+			||x== 2 && y == 14 || x == 4 && y == 15 || x == 4 && y == 16 || x == 11 && y == 15 || x == 13 && y == 15 || x == 17 && y == 16 || x == 19 && y == 16|| x == 20 && y == 16 || x == 23 && y == 17	
+			||x == 2 && y == 18 || x == 3 && y == 18 || x == 10 && y == 18 || x == 14 && y == 18 || x == 5 && y == 19|| x == 10 && y == 19 || x == 15 && y == 19 || x == 36 && y == 19 || x == 36 && y == 18 || x == 23 && y == 18 || x == 24 && y == 18
+		)
+			return true;
+		else
+			return false;
+	}
+
+	public bool assignItem(int x, int y){
+
+		if (x == 3 && y == 2 || x == 20 && y == 12 || x == 26 && y == 10) {
+			return true;
+		} else
+			return false;
+	}
 
 }
