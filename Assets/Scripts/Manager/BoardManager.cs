@@ -79,17 +79,41 @@ public class BoardManager : MonoBehaviour {
 					GameObject toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length)];
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
 				} else if ( x == 30 && y == 15|| x == 31 && y == 15 || x == 30 && y == 14 || x == 31 && y == 14
-					|| x == 11 && y == 12|| x == 12 && y == 12 || x == 11 && y == 11 || x == 12 && y == 11){
+					|| x == 11 && y == 12|| x == 12 && y == 12 || x == 11 && y == 11 || x == 12 && y == 11
+					|| x == 15 && y == 9 || x == 16 && y == 9 || x == 15 && y == 8 || x == 16 && y == 8
+					|| x == 14 && y == 8 || x == 16 && y == 10 
+					|| x == 34 && y == 5 || x == 35 && y == 5 || x == 34 && y == 4 || x == 35 && y == 4
+					|| x == 27 && y == 2 || x == 28 && y == 2 || x == 27 && y == 1 || x == 28 && y == 1){
 
 
-					if (x == 30 && y == 15|| x == 11 && y == 12 ) {
+					if (x == 30 && y == 15 || x == 11 && y == 12 || x == 27 && y == 2 ) {
 						t = 0;
-					} else if (x == 31 && y == 15|| x == 12 && y == 12) {
+					} else if (x == 31 && y == 15 || x == 12 && y == 12 || x == 28 && y == 2) {
 						t = 1;
-					} else if (x == 30 && y == 14|| x == 11 && y == 11) {
+					} else if (x == 30 && y == 14 || x == 11 && y == 11 || x == 27 && y == 1) {
 						t = 2;
-					} else if (x == 31 && y == 14|| x == 12 && y == 11) {
+					} else if (x == 31 && y == 14 || x == 12 && y == 11 || x == 28 && y == 1) {
 						t = 3;
+					}else if ( x == 15 && y == 9){
+						t = 8;
+					}else if ( x == 16 && y == 9){
+						t = 9;
+					}else if ( x == 15 && y == 8){
+						t = 10;
+					}else if ( x == 16 && y == 8){
+						t = 11;
+					}else if ( x == 14 && y == 8){
+						t = 12;
+					}else if ( x == 16 && y == 10){
+						t = 13;
+					}else if ( x == 34 && y == 5){
+						t = 4;
+					}else if ( x == 35 && y == 5){
+						t = 5;
+					}else if ( x == 34 && y == 4){
+						t = 6;
+					}else if ( x == 35 && y == 4){
+						t = 7;
 					}
 					
 					GameObject toInstantiate = backgroundTiles[t];
@@ -102,7 +126,7 @@ public class BoardManager : MonoBehaviour {
 
 				}else if (assignObstacle(x,y)){
 
-
+					// floor with obstacle
 					GameObject toInstantiate = obstacleTiles[Random.Range (0, obstacleTiles.Length)];
 					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
@@ -113,8 +137,21 @@ public class BoardManager : MonoBehaviour {
 
 				}else if (assignItem(x,y)){
 
+					int indexItem = 0;
 
-					GameObject toInstantiate = itemTiles[Random.Range (0, itemTiles.Length)];
+					if (x == 3)
+						indexItem = 0;
+					else if (x == 20)
+						indexItem = 1;
+					else if (x == 26)
+						indexItem = 4;
+					else if (x == 33)
+						indexItem = 3;
+					else if (x == 6)
+						indexItem = 4;
+					
+					//  floor with item
+					GameObject toInstantiate = itemTiles[indexItem];
 					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
 
@@ -125,6 +162,7 @@ public class BoardManager : MonoBehaviour {
 				}
 				else{
 
+					// the rest of floor
 					GameObject toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)];
 					//Instantiate the GameObject instance using the prefab chosen for toInstantiate at the Vector3 corresponding to current grid position in loop, cast it to GameObject.
 					instance = Instantiate (toInstantiate, position.toVector3(), Quaternion.identity) as GameObject;
@@ -147,7 +185,7 @@ public class BoardManager : MonoBehaviour {
 		Vector3 randomPosition = gridPositions[randomIndex];
 
 		//limit the range of randomPosition
-		while (randomPosition.x < 4 || randomPosition.x > (columns - 6) || randomPosition.y < 4 || randomPosition.y > (rows - 6)) {
+		while (randomPosition.x < 5 || randomPosition.x > (columns - 6) || randomPosition.y < 5 || randomPosition.y > (rows - 6)) {
 			
 			randomPosition = gridPositions[Random.Range (0, gridPositions.Count)];
 		}
@@ -229,7 +267,7 @@ public class BoardManager : MonoBehaviour {
 
 	public bool assignItem(int x, int y){
 
-		if (x == 3 && y == 2 || x == 20 && y == 12 || x == 26 && y == 10) {
+		if (x == 3 && y == 2 || x == 20 && y == 12 || x == 26 && y == 10 || x == 33 && y == 17 || x == 6 && y == 18) {
 			return true;
 		} else
 			return false;
