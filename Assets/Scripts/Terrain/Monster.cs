@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour {
 
-	private BoardManager boardManager;
 	public Position monsterPosition;
 
 	public float attackPower;
@@ -22,54 +21,64 @@ public class Monster : MonoBehaviour {
 
 	private MovingArea movingArea;
 
+	private float startTime;
+	private float speed = 1.0F;
+
+	private Vector2 currentPosition;
+	private Vector2 targetPosition;
+
 	// Use this for initialization
 	void Start () {
+		currentPosition = targetPosition = transform.position;
+		startTime = Time.time;
 
-		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
-		Vector3 posi = transform.position;
-		Debug.Log ("monster"+ posi);
-		Debug.Log (boardManager.monsterPositions[0]); 
-		Time.fixedDeltaTime = 0.5f;
+		Debug.Log ("Monster start position"+ currentPosition);
 	}
 
-	public void FixedUpdate(){
+	public void Update() {
+		// when the monster moves to the target position, 
+		// we need to start to move to the next position again and again.
+		if (transform.position == new Vector3(targetPosition.x, targetPosition.y, 0)) {
+			// Remove the cost of tile on the start position
+			toggleCostOfTile (toPosition (currentPosition), false);
+			// Add the cost of tile on the target position
+			toggleCostOfTile (toPosition (targetPosition), true);
+			// Notify the player through notification system that the monster now in a new position.
+			NotificationSystem.publish (new MonsterMoveEvent (this, toPosition (currentPosition), toPosition (targetPosition)));
 
-		toggleCostOfTile (toPosition2 (transform.position), false);
-		Vector2 mA = movingArea.getNextRandomPosition(transform.position);
-		if (transform.position.x != mA.x || transform.position.y != mA.y) {
-			//notify the player through notification system.
-			NotificationSystem.publish (new MonsterMoveEvent (this, toPosition2 (transform.position), toPosition2 (mA)));
+			// Now the arrived target position becomes the start position for the next move.
+			currentPosition = targetPosition;
+			// Retrive the target position for the next move.
+			targetPosition = movingArea.getNextRandomPosition(transform.position);
 		}
-		transform.position = mA;
-		toggleCostOfTile (toPosition2 (mA), true);
-		//setPosition (toPosition2(mA));
-        //transform.position = movingArea.getNextRandomPosition(transform.position);
-	}
 
+		float distance = Vector2.Distance (transform.position, targetPosition);
+		float duration = Time.time - startTime;
+		float distCovered = duration * speed;
+		transform.position = Vector2.Lerp (transform.position, targetPosition, distCovered / distance);
+		startTime = startTime + duration;
+	}
+		
 	public void setPosition(GridWorld gridWorld, Position position) {
 		this.gridWorld = gridWorld;
 		this.monsterPosition = position;
 		this.movingArea = new MovingArea(gridWorld, position , movingAreaWidth, movingAreaHeight);
 	
-
 		// initial its surrounding tiles in the grid world with monsterAtttackCost
 		this.toggleCostOfTile (monsterPosition, true);
 	}
 
 	// update its surrounding tiles in the grid world with monsterAtttackCost
-	public void toggleCostOfTile(Position position, bool turnedOn){
+	public void toggleCostOfTile(Position position, bool turnedOn) {
 
 		//float attackArea = attackProbabilityArea * 2 + 1;
 
 		float a = 1 / (attackProbabilityArea * 2.0f + 1.0f);
 
-		for (int i = 1; i< attackProbabilityArea + 1; i++)
+		for (int i = 1; i< attackProbabilityArea + 1; i++) 
 		{
-
 			setProbabilityArea (position, turnedOn, i, a);
-
 		}
-			
 	}
 
 	public void setProbabilityArea(Position position, bool turnedOn, int circle, float a)
@@ -162,15 +171,9 @@ public class Monster : MonoBehaviour {
 		return attackPower;
 	}
 
-	public Position toPosition(Vector3 number){
+	public Position toPosition(Vector2 vectorPosition){
 
-		Position p = new Position (number.x, number.y);
-		return p;
-	}
-
-	public Position toPosition2(Vector2 number){
-
-		Position p = new Position (number.x, number.y);
+		Position p = new Position (vectorPosition.x, vectorPosition.y);
 		return p;
 	}
 
