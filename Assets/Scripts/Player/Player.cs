@@ -42,7 +42,9 @@ public class Player : MonoBehaviour {
 		animator = GetComponent<Animator>();
 		//Get a component reference to the gameobject's gameManger component
 		boardManager = GameObject.Find("GameManager").GetComponent<BoardManager>();
-		currentPosition = targetPosition = nextStepPosition = new Position (transform.position);
+		currentPosition = new Position (transform.position);
+		nextStepPosition = new Position (transform.position);
+		targetPosition = new Position (transform.position);
 		// Substribe to notifications from the monster.
 		NotificationSystem.subscribe (this);
 		startTime = Time.time;
@@ -167,20 +169,25 @@ public class Player : MonoBehaviour {
 		}
 
 		// ellipse between current position and target position
-		int centerX = targetPosition.x > currentPosition.x ? (targetPosition.x - currentPosition.x)/2 : (currentPosition.x - targetPosition.x)/2;
-		int centerY = targetPosition.y > currentPosition.y ? (targetPosition.y - currentPosition.y)/2 : (currentPosition.y - targetPosition.y)/2;
+		int centerX = (targetPosition.x + currentPosition.x)/2;
+		int centerY = (targetPosition.y + currentPosition.y)/2;
 
-		double a = Math.Sqrt (Math.Pow (currentPosition.x - centerX, 2) + Math.Pow (currentPosition.y - centerY, 2));
-		int pathLength = path.Count; // because grid size is 1.
-		double angle1 = Math.Acos(a*2/pathLength);
-		double angle2 = Math.Acos (Math.Abs (currentPosition.x - centerX) / a);
-		double angle = angle1 + angle2;
+		double sqF = Math.Pow (currentPosition.x - centerX, 2) + Math.Pow (currentPosition.y - centerY, 2);
+		double pathLength = 0;
+		path.ForEach((step) => pathLength += step.distToParent);
 
-		double diffX = targetPosition.x > currentPosition.x ? pathLength / 2 * Math.Cos (angle) : -(pathLength / 2 * Math.Cos (angle));
-		double diffY = targetPosition.y > currentPosition.y ? pathLength / 2 * Math.Sin (angle) : -(pathLength / 2 * Math.Sin (angle));
-		double bX = currentPosition.x + diffX;
-		double bY = currentPosition.y + diffY;
-		double b = Math.Sqrt(Math.Pow(bX - centerX, 2) + Math.Pow(bY - centerY, 2));
+		double a = pathLength / 2;
+		double b = Math.Sqrt (Math.Pow (a, 2) - sqF);
+
+//		double angle1 = Math.Acos(f/a);
+//		double angle2 = Math.Acos (Math.Abs (currentPosition.x - centerX) / a);
+//		double angle = angle1 + angle2;
+//
+//		double diffX = targetPosition.x > currentPosition.x ? pathLength / 2 * Math.Cos (angle) : -(pathLength / 2 * Math.Cos (angle));
+//		double diffY = targetPosition.y > currentPosition.y ? pathLength / 2 * Math.Sin (angle) : -(pathLength / 2 * Math.Sin (angle));
+//		double bX = currentPosition.x + diffX;
+//		double bY = currentPosition.y + diffY;
+//		double b = Math.Sqrt(Math.Pow(bX - centerX, 2) + Math.Pow(bY - centerY, 2));
 
 		foreach (MonsterMoveEvent moveEvent in monsterMoveEvents) {
 			Position newPos = moveEvent.newPos;

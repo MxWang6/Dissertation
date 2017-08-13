@@ -52,6 +52,7 @@ public class GridWorld
 			findNearNodes(currentNode).ForEach((nearNode) => {
 				if (!nearNode.tile.blocked && !close.Contains(nearNode)) {
 					int newGcostToNearNode = currentNode.gcost + GetDistance(currentNode, nearNode);
+					double currentToNearNodeDist = GetRealDistance(currentNode, nearNode);
 
 					if (newGcostToNearNode < nearNode.gcost || !open.Contains(nearNode)) {
 
@@ -64,10 +65,10 @@ public class GridWorld
 						nearNode.gcost = newGcostToNearNode;
 						nearNode.hcost = GetDistance(nearNode, targetNode);
 						nearNode.parent = currentNode;
+						nearNode.distToParent = currentToNearNodeDist;
 					}
 				}
 			});
-
 		}
 
 		// no path is found, e.g. no path can reach the distination.
@@ -104,7 +105,17 @@ public class GridWorld
 
 		return 14 * distanceX + 10 * (distanceY - distanceX) + (int)node2.tile.monsterCost;
 	}
-		
+
+	private double GetRealDistance(Node node1, Node node2) {
+		double distanceX = Math.Abs (node1.tile.position.x - node2.tile.position.x);
+		double distanceY = Math.Abs (node1.tile.position.y - node2.tile.position.y);
+
+		if (distanceX > distanceY) {
+			return Math.Sqrt(2) * distanceY + 1 * (distanceX - distanceY) + node2.tile.monsterCost; //added Monster cost here
+		}
+
+		return Math.Sqrt(2) * distanceX + 1 * (distanceY - distanceX) + node2.tile.monsterCost;
+	}
 
 	private List<Node> GetPath(Node startNode, Node endNode) {
 		List<Node> path = new List<Node> ();

@@ -228,6 +228,8 @@ public class BoardManager : MonoBehaviour {
 	//SetupScene initializes our level and calls the previous functions to lay out the game board
 	public void SetupScene (int level)
 	{
+		Random.seed = 100;
+
 		BoardSetup();
 
 		InitialiseList ();

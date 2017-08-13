@@ -6,6 +6,7 @@ public class Node
 	public Tile tile;
 	public int gcost;
 	public int hcost;
+	public double distToParent;
 
 	public Node (Tile tile)
 	{
