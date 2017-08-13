@@ -80,7 +80,7 @@ public class Player : MonoBehaviour {
 				}
 				break;
 			case Mode.UPDATE_ONLY_WHEN_MONSTER_MOVES_POSITION_WITHIN_ELLIPSE:
-				if (hasSomeMonsterMovedWithinEllipseArea ()) {
+				if (canMonsterAttackPath() || hasSomeMonsterMovedWithinEllipseArea ()) {
 					recalculateThePath ();
 					monsterMoveEvents.Clear ();
 				}
@@ -178,20 +178,15 @@ public class Player : MonoBehaviour {
 
 		double a = pathLength / 2;
 		double b = Math.Sqrt (Math.Pow (a, 2) - sqF);
-
-//		double angle1 = Math.Acos(f/a);
-//		double angle2 = Math.Acos (Math.Abs (currentPosition.x - centerX) / a);
-//		double angle = angle1 + angle2;
-//
-//		double diffX = targetPosition.x > currentPosition.x ? pathLength / 2 * Math.Cos (angle) : -(pathLength / 2 * Math.Cos (angle));
-//		double diffY = targetPosition.y > currentPosition.y ? pathLength / 2 * Math.Sin (angle) : -(pathLength / 2 * Math.Sin (angle));
-//		double bX = currentPosition.x + diffX;
-//		double bY = currentPosition.y + diffY;
-//		double b = Math.Sqrt(Math.Pow(bX - centerX, 2) + Math.Pow(bY - centerY, 2));
+		Vector2 v = new Vector2 (targetPosition.x - currentPosition.x, targetPosition.y - currentPosition.y);
+		Vector2 xAxis = new Vector2(1, 0);
+		double A = Math.Acos(Vector2.Dot(v, xAxis) / (v.magnitude * xAxis.magnitude)); // https://wenku.baidu.com/view/210f671de87101f69e319560.html
 
 		foreach (MonsterMoveEvent moveEvent in monsterMoveEvents) {
 			Position newPos = moveEvent.newPos;
-			if (Math.Pow (newPos.x - centerX, 2) / Math.Pow (a, 2) + Math.Pow (newPos.y - centerY, 2) / Math.Pow (b, 2) <= 1) {
+			double x = (Math.Cos (A) * newPos.x + Math.Sin (A) * newPos.y) / (Math.Pow (Math.Cos (A), 2) + Math.Pow (Math.Sin (A), 2));
+			double y = (Math.Cos (A) * newPos.y - Math.Sin (A) * newPos.x) / (Math.Pow (Math.Cos (A), 2) + Math.Pow (Math.Sin (A), 2));
+			if (Math.Pow (x - centerX, 2) / Math.Pow (a, 2) + Math.Pow (y - centerY, 2) / Math.Pow (b, 2) <= 1) {
 				return true;
 			}
 		}
