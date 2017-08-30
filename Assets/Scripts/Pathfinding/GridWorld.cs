@@ -100,10 +100,10 @@ public class GridWorld
 		int distanceY = Math.Abs (node1.tile.position.y - node2.tile.position.y);
 
 		if (distanceX > distanceY) {
-			return 14 * distanceY + 10 * (distanceX - distanceY) + (int)node2.tile.monsterCost; //added Monster cost here
+			return 14 * distanceY + 10 * (distanceX - distanceY)+ (int)node2.tile.monsterCost; //added Monster cost here
 		}
 
-		return 14 * distanceX + 10 * (distanceY - distanceX) + (int)node2.tile.monsterCost;
+		return 14 * distanceX + 10 * (distanceY - distanceX)+ (int)node2.tile.monsterCost;
 	}
 
 	private double GetRealDistance(Node node1, Node node2) {
